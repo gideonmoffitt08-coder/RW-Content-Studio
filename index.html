@@ -775,7 +775,7 @@ async function sendMsg(widget) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 1000,
         system: buildSystemPrompt(),
         messages: histories[widget].map(m => ({ role: m.role, content: m.content })),
@@ -893,7 +893,7 @@ function generateEmbedCode() {
   const msgsEl=document.getElementById('rw-msgs'),bubble=document.getElementById('rw-bubble'),widget=document.getElementById('rw-widget'),input=document.getElementById('rw-input'),sendBtn=document.getElementById('rw-send');
   let open=false;
   function render(){msgsEl.innerHTML=msgs.map(m=>\`<div style="display:flex;justify-content:\${m.role==='user'?'flex-end':'flex-start'}"><div style="max-width:75%;background:\${m.role==='user'?CONFIG.primaryColor:'rgba(255,255,255,0.06)'};color:#f0f0f0;padding:10px 14px;border-radius:\${m.role==='user'?'18px 18px 4px 18px':'18px 18px 18px 4px'};font-size:14px;line-height:1.5">\${m.content}</div></div>\`).join('');msgsEl.scrollTop=msgsEl.scrollHeight;}
-  async function send(){const txt=input.value.trim();if(!txt)return;msgs.push({role:'user',content:txt});input.value='';render();try{const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM,messages:msgs})});const data=await res.json();let text=data.content?.[0]?.text||'Sorry, try again.';const lm=text.match(/LEAD_CAPTURE:(\\{.*?\\})/);if(lm){try{const lead=JSON.parse(lm[1]);text=text.replace(/LEAD_CAPTURE:\\{.*?\\}/,'').trim();if(CONFIG.emailLeads&&CONFIG.formspreeId){fetch('https://formspree.io/f/'+CONFIG.formspreeId,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({business:CONFIG.businessName,...lead,source:'Ruby Wall Chatbot'})});}}catch(e){}}msgs.push({role:'assistant',content:text});}catch(e){msgs.push({role:'assistant',content:'Connection error. Please try again.'});}render();}
+  async function send(){const txt=input.value.trim();if(!txt)return;msgs.push({role:'user',content:txt});input.value='';render();try{const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:SYSTEM,messages:msgs})});const data=await res.json();let text=data.content?.[0]?.text||'Sorry, try again.';const lm=text.match(/LEAD_CAPTURE:(\\{.*?\\})/);if(lm){try{const lead=JSON.parse(lm[1]);text=text.replace(/LEAD_CAPTURE:\\{.*?\\}/,'').trim();if(CONFIG.emailLeads&&CONFIG.formspreeId){fetch('https://formspree.io/f/'+CONFIG.formspreeId,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({business:CONFIG.businessName,...lead,source:'Ruby Wall Chatbot'})});}}catch(e){}}msgs.push({role:'assistant',content:text});}catch(e){msgs.push({role:'assistant',content:'Connection error. Please try again.'});}render();}
   bubble.onclick=()=>{open=!open;widget.style.display=open?'flex':'none';if(open)render();};
   sendBtn.onclick=send;input.addEventListener('keydown',e=>e.key==='Enter'&&send());
   render();

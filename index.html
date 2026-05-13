@@ -3,17 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Content Studio — Ruby Wall</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>Ruby Wall — Content Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --yellow: #E8003D;
-    --orange: #C2002F;
+    --ruby: #E8003D;
+    --ruby-dark: #C2002F;
     --pink: #FF4D6D;
     --cyan: #FF8FA3;
     --dark: #0A0A0A;
     --card: #141414;
+    --card2: #1a0c10;
     --border: #2a1a1a;
+    --border2: rgba(232,0,61,0.25);
     --text: #F0F0F0;
     --muted: #666;
   }
@@ -28,18 +30,216 @@
     overflow-x: hidden;
   }
 
-  /* Animated background */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background: 
+    background:
       radial-gradient(ellipse 60% 40% at 10% 20%, rgba(232,0,61,0.08) 0%, transparent 60%),
       radial-gradient(ellipse 50% 60% at 90% 80%, rgba(255,77,109,0.06) 0%, transparent 60%),
       radial-gradient(ellipse 40% 40% at 50% 50%, rgba(194,0,47,0.04) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
+
+  /* ─── AUTH SCREENS ─── */
+  .auth-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--dark);
+  }
+
+  .auth-wrap.hidden { display: none; }
+
+  .auth-card {
+    background: var(--card2);
+    border: 1px solid var(--border2);
+    border-radius: 24px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--ruby), transparent);
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .auth-logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, var(--ruby), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .auth-logo-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .auth-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-style: italic;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .auth-sub {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .auth-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .auth-input {
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    -webkit-appearance: none;
+  }
+
+  .auth-input:focus { border-color: var(--ruby); }
+
+  .auth-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .auth-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(232,0,61,0.4);
+  }
+
+  .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .auth-error {
+    background: rgba(232,0,61,0.1);
+    border: 1px solid rgba(232,0,61,0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--pink);
+    text-align: center;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .auth-error.visible { display: block; }
+
+  .auth-switch {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .auth-switch a {
+    color: var(--ruby);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .auth-switch a:hover { color: var(--pink); }
+
+  .auth-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* Admin badge shown in app */
+  .admin-badge {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: rgba(232,0,61,0.15);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--ruby);
+  }
+
+  .admin-badge.visible { display: flex; }
+
+  /* Logout button */
+  .logout-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover { border-color: var(--ruby); color: var(--ruby); }
+
+  /* ─── MAIN APP (hidden until logged in) ─── */
+  .app-wrap { display: none; }
+  .app-wrap.visible { display: block; }
 
   /* Header */
   header {
@@ -60,7 +260,7 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: 22px;
     letter-spacing: 2px;
-    background: linear-gradient(90deg, var(--yellow), var(--orange));
+    background: linear-gradient(90deg, var(--ruby), var(--ruby-dark));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -76,8 +276,14 @@
     margin-top: -4px;
   }
 
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .header-badge {
-    background: linear-gradient(135deg, var(--yellow), var(--pink));
+    background: linear-gradient(135deg, var(--ruby), var(--pink));
     color: #fff;
     font-size: 10px;
     font-weight: 700;
@@ -87,7 +293,6 @@
     font-family: 'Space Mono', monospace;
   }
 
-  /* Main layout */
   main {
     position: relative;
     z-index: 1;
@@ -96,7 +301,6 @@
     padding: 48px 24px 80px;
   }
 
-  /* Hero section */
   .hero {
     text-align: center;
     margin-bottom: 56px;
@@ -122,21 +326,14 @@
 
   .hero h1 .line1 { color: var(--text); }
   .hero h1 .line2 {
-    background: linear-gradient(90deg, var(--yellow), var(--orange), var(--pink));
+    background: linear-gradient(90deg, var(--ruby), var(--ruby-dark), var(--pink));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .hero p {
-    color: var(--muted);
-    font-size: 16px;
-    max-width: 480px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
+  .hero p { color: var(--muted); font-size: 16px; max-width: 480px; margin: 0 auto; line-height: 1.6; }
 
-  /* Platform tabs */
   .platform-tabs {
     display: flex;
     gap: 8px;
@@ -159,15 +356,9 @@
     font-family: 'DM Sans', sans-serif;
   }
 
-  .tab:hover { border-color: var(--yellow); color: var(--yellow); }
-  .tab.active {
-    background: var(--yellow);
-    border-color: var(--yellow);
-    color: #fff;
-    font-weight: 700;
-  }
+  .tab:hover { border-color: var(--ruby); color: var(--ruby); }
+  .tab.active { background: var(--ruby); border-color: var(--ruby); color: #fff; font-weight: 700; }
 
-  /* Studio card */
   .studio-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -185,50 +376,15 @@
     gap: 12px;
   }
 
-  .card-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
+  .card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
   .card-icon.yellow { background: rgba(232,0,61,0.15); }
-  .card-icon.pink { background: rgba(255,77,109,0.15); }
-  .card-icon.cyan { background: rgba(255,143,163,0.15); }
 
-  .card-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 1px;
-    color: var(--text);
-  }
-
-  .card-sub {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
+  .card-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; color: var(--text); }
+  .card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .card-body { padding: 28px; }
 
-  /* Form elements */
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
 
   label {
     font-size: 11px;
@@ -253,20 +409,11 @@
     -webkit-appearance: none;
   }
 
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--yellow);
-  }
-
+  input:focus, select:focus, textarea:focus { border-color: var(--ruby); }
   textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
-
   select option { background: #1a1a1a; }
 
-  /* Tone chips */
-  .tone-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  .tone-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 
   .chip {
     padding: 6px 14px;
@@ -280,14 +427,13 @@
     font-family: 'DM Sans', sans-serif;
   }
 
-  .chip:hover { border-color: var(--yellow); color: var(--yellow); }
-  .chip.selected { background: rgba(255,214,0,0.12); border-color: var(--yellow); color: var(--yellow); font-weight: 600; }
+  .chip:hover { border-color: var(--ruby); color: var(--ruby); }
+  .chip.selected { background: rgba(232,0,61,0.12); border-color: var(--ruby); color: var(--ruby); font-weight: 600; }
 
-  /* Generate button */
   .btn-generate {
     width: 100%;
     padding: 18px;
-    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
     border: none;
     border-radius: 12px;
     color: #fff;
@@ -305,24 +451,17 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, var(--orange), var(--pink));
+    background: linear-gradient(135deg, var(--ruby-dark), var(--pink));
     opacity: 0;
     transition: opacity 0.3s;
   }
 
   .btn-generate:hover::before { opacity: 1; }
-  .btn-generate:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(255,107,0,0.4); }
+  .btn-generate:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(232,0,61,0.4); }
   .btn-generate:active { transform: translateY(0); }
-
   .btn-generate span { position: relative; z-index: 1; }
+  .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-  .btn-generate:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  /* Output section */
   .output-section {
     background: var(--card);
     border: 1px solid var(--border);
@@ -342,16 +481,8 @@
     justify-content: space-between;
   }
 
-  .output-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 1px;
-  }
-
-  .output-actions {
-    display: flex;
-    gap: 8px;
-  }
+  .output-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; }
+  .output-actions { display: flex; gap: 8px; }
 
   .btn-sm {
     padding: 6px 14px;
@@ -366,16 +497,11 @@
     font-weight: 500;
   }
 
-  .btn-sm:hover { border-color: var(--yellow); color: var(--yellow); }
-  .btn-sm.accent { background: var(--yellow); border-color: var(--yellow); color: #fff; font-weight: 700; }
-  .btn-sm.accent:hover { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .btn-sm:hover { border-color: var(--ruby); color: var(--ruby); }
+  .btn-sm.accent { background: var(--ruby); border-color: var(--ruby); color: #fff; font-weight: 700; }
+  .btn-sm.accent:hover { background: var(--ruby-dark); border-color: var(--ruby-dark); }
 
-  /* Posts grid */
-  .posts-grid {
-    padding: 24px 28px;
-    display: grid;
-    gap: 16px;
-  }
+  .posts-grid { padding: 24px 28px; display: grid; gap: 16px; }
 
   .post-card {
     background: #1a1a1a;
@@ -388,12 +514,7 @@
 
   .post-card:hover { border-color: #333; }
 
-  .post-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
+  .post-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 
   .post-platform {
     font-family: 'Space Mono', monospace;
@@ -404,10 +525,9 @@
     font-weight: 700;
   }
 
-  .post-platform.instagram { background: rgba(232,0,61,0.15); color: var(--yellow); }
+  .post-platform.instagram { background: rgba(232,0,61,0.15); color: var(--ruby); }
   .post-platform.facebook { background: rgba(255,143,163,0.15); color: var(--cyan); }
   .post-platform.tiktok { background: rgba(255,77,109,0.12); color: var(--pink); }
-  .post-platform.twitter { background: rgba(255,255,255,0.08); color: #aaa; }
 
   .post-copy-btn {
     background: transparent;
@@ -421,47 +541,24 @@
     font-family: 'DM Sans', sans-serif;
   }
 
-  .post-copy-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+  .post-copy-btn:hover { border-color: var(--ruby); color: var(--ruby); }
   .post-copy-btn.copied { border-color: #00ff88; color: #00ff88; }
 
-  .post-text {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text);
-    white-space: pre-wrap;
-  }
+  .post-text { font-size: 14px; line-height: 1.7; color: var(--text); white-space: pre-wrap; }
+  .post-hashtags { margin-top: 10px; font-size: 13px; color: var(--cyan); opacity: 0.8; }
 
-  .post-hashtags {
-    margin-top: 10px;
-    font-size: 13px;
-    color: var(--cyan);
-    opacity: 0.8;
-  }
-
-  /* Loading state */
-  .loading-state {
-    padding: 60px 28px;
-    text-align: center;
-    display: none;
-  }
-
+  .loading-state { padding: 60px 28px; text-align: center; display: none; }
   .loading-state.visible { display: block; }
 
-  .loader {
-    display: inline-flex;
-    gap: 6px;
-    margin-bottom: 20px;
-  }
+  .loader { display: inline-flex; gap: 6px; margin-bottom: 20px; }
 
   .loader-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--yellow);
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--ruby);
     animation: bounce 0.8s ease infinite;
   }
 
-  .loader-dot:nth-child(2) { background: var(--orange); animation-delay: 0.15s; }
+  .loader-dot:nth-child(2) { background: var(--ruby-dark); animation-delay: 0.15s; }
   .loader-dot:nth-child(3) { background: var(--pink); animation-delay: 0.3s; }
 
   @keyframes bounce {
@@ -482,18 +579,10 @@
     50% { opacity: 1; }
   }
 
-  /* Calendar section */
-  .calendar-toggle {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    margin-bottom: 16px;
-  }
+  .calendar-toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 16px; }
 
   .toggle-switch {
-    width: 40px;
-    height: 22px;
+    width: 40px; height: 22px;
     background: var(--border);
     border-radius: 100px;
     position: relative;
@@ -501,42 +590,26 @@
     flex-shrink: 0;
   }
 
-  .toggle-switch.on { background: var(--yellow); }
+  .toggle-switch.on { background: var(--ruby); }
 
   .toggle-knob {
     position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 16px;
-    height: 16px;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
     background: #fff;
     border-radius: 50%;
     transition: transform 0.2s;
   }
 
   .toggle-switch.on .toggle-knob { transform: translateX(18px); }
+  .toggle-label { font-size: 13px; color: var(--text); font-weight: 500; }
 
-  .toggle-label {
-    font-size: 13px;
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  /* Calendar grid */
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    margin-top: 16px;
-  }
+  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 16px; }
 
   .cal-header {
     font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 1px;
-    color: var(--muted);
-    text-align: center;
-    padding: 4px 0;
+    font-size: 9px; letter-spacing: 1px;
+    color: var(--muted); text-align: center; padding: 4px 0;
   }
 
   .cal-day {
@@ -548,61 +621,39 @@
     font-size: 10px;
   }
 
-  .cal-day-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
+  .cal-day-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 6px; }
 
   .cal-post-tag {
     background: rgba(232,0,61,0.12);
     border: 1px solid rgba(232,0,61,0.2);
-    border-radius: 4px;
-    padding: 3px 5px;
-    font-size: 9px;
-    color: var(--yellow);
-    margin-bottom: 3px;
-    line-height: 1.3;
-    cursor: pointer;
-    transition: background 0.2s;
+    border-radius: 4px; padding: 3px 5px;
+    font-size: 9px; color: var(--ruby);
+    margin-bottom: 3px; line-height: 1.3;
+    cursor: pointer; transition: background 0.2s;
   }
 
   .cal-post-tag:hover { background: rgba(232,0,61,0.22); }
   .cal-post-tag.pink { background: rgba(255,77,109,0.12); border-color: rgba(255,77,109,0.2); color: var(--pink); }
-  .cal-post-tag.pink:hover { background: rgba(255,77,109,0.22); }
   .cal-post-tag.cyan { background: rgba(255,143,163,0.12); border-color: rgba(255,143,163,0.2); color: var(--cyan); }
 
-  /* Divider */
-  .section-divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    margin: 32px 0;
-  }
+  .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 32px 0; }
 
-  /* Footer credit */
   .footer-credit {
-    text-align: center;
-    margin-top: 48px;
+    text-align: center; margin-top: 48px;
     font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    opacity: 0.5;
+    font-size: 10px; letter-spacing: 3px;
+    color: var(--muted); opacity: 0.5;
   }
 
-  /* Animations */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* Mobile */
   @media (max-width: 640px) {
     header { padding: 0 16px; }
     main { padding: 32px 16px 60px; }
@@ -610,158 +661,337 @@
     .card-body { padding: 20px; }
     .posts-grid { padding: 16px; }
     .output-header { padding: 16px 20px; flex-wrap: wrap; gap: 10px; }
-    .calendar-grid { grid-template-columns: repeat(7, 1fr); gap: 3px; }
-    .cal-day { min-height: 60px; padding: 5px 3px; }
+    .auth-card { padding: 36px 24px; }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    Ruby Wall
-    <span>CONTENT STUDIO</span>
-  </div>
-  <div class="header-badge">AI POWERED</div>
-</header>
-
-<main>
-
-  <!-- Hero -->
-  <div class="hero">
-    <p class="hero-eyebrow">✦ Powered by Claude AI ✦</p>
-    <h1>
-      <div class="line1">CREATE CONTENT</div>
-      <div class="line2">THAT CONVERTS</div>
-    </h1>
-    <p>Generate scroll-stopping social media posts and a full content calendar for your business — in seconds.</p>
-  </div>
-
-  <!-- Platform Tabs -->
-  <div class="platform-tabs">
-    <button class="tab active" onclick="setTab(this, 'instagram')">📸 Instagram</button>
-    <button class="tab" onclick="setTab(this, 'facebook')">👥 Facebook</button>
-    <button class="tab" onclick="setTab(this, 'tiktok')">🎵 TikTok</button>
-    <button class="tab" onclick="setTab(this, 'all')">⚡ All Platforms</button>
-  </div>
-
-  <!-- Input Card -->
-  <div class="studio-card">
-    <div class="card-header">
-      <div class="card-icon yellow">✍️</div>
-      <div>
-        <div class="card-title">Tell Us About Your Business</div>
-        <div class="card-sub">The more detail you give, the better the content</div>
-      </div>
+<!-- ─── LOGIN SCREEN ─── -->
+<div class="auth-wrap" id="loginScreen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-text">Ruby Wall</div>
+      <div class="auth-logo-sub">CONTENT STUDIO</div>
     </div>
-    <div class="card-body">
+    <div class="auth-title">Welcome back.</div>
+    <p class="auth-sub">Sign in to access your AI content workspace.</p>
+    <div class="auth-error" id="loginError">Incorrect password. Please try again.</div>
+    <div class="auth-field">
+      <div class="auth-label">Password</div>
+      <input class="auth-input" type="password" id="loginPassword" placeholder="Enter your password" onkeydown="if(event.key==='Enter') handleLogin()" />
+    </div>
+    <button class="auth-btn" onclick="handleLogin()" id="loginBtn">SIGN IN</button>
+    <div class="auth-divider"></div>
+    <div class="auth-switch">New client? <a onclick="showSignup()">Create your account →</a></div>
+  </div>
+</div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Business Name</label>
-          <input type="text" id="bizName" placeholder="e.g. Blessed Fit Zone" />
-        </div>
-        <div class="form-group">
-          <label>Industry / Niche</label>
-          <input type="text" id="bizNiche" placeholder="e.g. Gym, Barbershop, Restaurant" />
+<!-- ─── SIGNUP SCREEN ─── -->
+<div class="auth-wrap hidden" id="signupScreen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-text">Ruby Wall</div>
+      <div class="auth-logo-sub">CONTENT STUDIO</div>
+    </div>
+    <div class="auth-title">Create Account</div>
+    <p class="auth-sub">Enter your invite code and create a password to get started.</p>
+    <div class="auth-error" id="signupError">Invalid invite code. Contact Ruby Wall to get access.</div>
+    <div class="auth-field">
+      <div class="auth-label">Invite Code</div>
+      <input class="auth-input" type="text" id="inviteCode" placeholder="Enter your invite code" style="text-transform:uppercase;" />
+    </div>
+    <div class="auth-field">
+      <div class="auth-label">Create Password</div>
+      <input class="auth-input" type="password" id="signupPassword" placeholder="Choose a password" />
+    </div>
+    <div class="auth-field">
+      <div class="auth-label">Confirm Password</div>
+      <input class="auth-input" type="password" id="signupConfirm" placeholder="Confirm your password" onkeydown="if(event.key==='Enter') handleSignup()" />
+    </div>
+    <button class="auth-btn" onclick="handleSignup()" id="signupBtn">CREATE ACCOUNT</button>
+    <div class="auth-divider"></div>
+    <div class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in →</a></div>
+  </div>
+</div>
+
+<!-- ─── MAIN APP ─── -->
+<div class="app-wrap" id="appWrap">
+
+  <header>
+    <div class="logo">
+      Ruby Wall
+      <span>CONTENT STUDIO</span>
+    </div>
+    <div class="header-right">
+      <div class="admin-badge" id="adminBadge">⚡ ADMIN</div>
+      <div class="header-badge">AI POWERED</div>
+      <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <p class="hero-eyebrow">✦ Powered by Claude AI ✦</p>
+      <h1>
+        <div class="line1">CREATE CONTENT</div>
+        <div class="line2">THAT CONVERTS</div>
+      </h1>
+      <p>Generate scroll-stopping social media posts and a full content calendar for your business — in seconds.</p>
+    </div>
+
+    <div class="platform-tabs">
+      <button class="tab active" onclick="setTab(this, 'instagram')">📸 Instagram</button>
+      <button class="tab" onclick="setTab(this, 'facebook')">👥 Facebook</button>
+      <button class="tab" onclick="setTab(this, 'tiktok')">🎵 TikTok</button>
+      <button class="tab" onclick="setTab(this, 'all')">⚡ All Platforms</button>
+    </div>
+
+    <div class="studio-card">
+      <div class="card-header">
+        <div class="card-icon yellow">✍️</div>
+        <div>
+          <div class="card-title">Tell Us About Your Business</div>
+          <div class="card-sub">The more detail you give, the better the content</div>
         </div>
       </div>
+      <div class="card-body">
 
-      <div class="form-group">
-        <label>What Do You Want To Promote?</label>
-        <input type="text" id="promotion" placeholder="e.g. New membership deal, Grand opening, Weekend special" />
-      </div>
-
-      <div class="form-group">
-        <label>Target Audience</label>
-        <input type="text" id="audience" placeholder="e.g. Young adults in Houston, Local families, Fitness beginners" />
-      </div>
-
-      <div class="form-group">
-        <label>Tone / Vibe</label>
-        <div class="tone-chips">
-          <button class="chip selected" onclick="toggleChip(this)">🔥 Hype</button>
-          <button class="chip" onclick="toggleChip(this)">💼 Professional</button>
-          <button class="chip" onclick="toggleChip(this)">😂 Funny</button>
-          <button class="chip" onclick="toggleChip(this)">💪 Motivational</button>
-          <button class="chip" onclick="toggleChip(this)">❤️ Warm & Personal</button>
-          <button class="chip" onclick="toggleChip(this)">🎯 Sales-Focused</button>
-          <button class="chip" onclick="toggleChip(this)">📖 Educational</button>
-          <button class="chip" onclick="toggleChip(this)">✨ Luxury</button>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Number of Posts</label>
-          <select id="postCount">
-            <option value="3">3 posts</option>
-            <option value="5" selected>5 posts</option>
-            <option value="7">7 posts</option>
-            <option value="10">10 posts</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Include Hashtags?</label>
-          <select id="includeHashtags">
-            <option value="yes" selected>Yes — include hashtags</option>
-            <option value="no">No hashtags</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Calendar toggle -->
-      <div class="form-group" style="margin-bottom:0;">
-        <label>Content Calendar</label>
-        <div class="calendar-toggle" onclick="toggleCalendar(this)">
-          <div class="toggle-switch" id="calToggle">
-            <div class="toggle-knob"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Business Name</label>
+            <input type="text" id="bizName" placeholder="e.g. Blessed Fit Zone" />
           </div>
-          <span class="toggle-label">Generate a 1-week posting schedule</span>
+          <div class="form-group">
+            <label>Industry / Niche</label>
+            <input type="text" id="bizNiche" placeholder="e.g. Gym, Barbershop, Restaurant" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>What Do You Want To Promote?</label>
+          <input type="text" id="promotion" placeholder="e.g. New membership deal, Grand opening, Weekend special" />
+        </div>
+
+        <div class="form-group">
+          <label>Target Audience</label>
+          <input type="text" id="audience" placeholder="e.g. Young adults in Houston, Local families, Fitness beginners" />
+        </div>
+
+        <div class="form-group">
+          <label>Tone / Vibe</label>
+          <div class="tone-chips">
+            <button class="chip selected" onclick="toggleChip(this)">🔥 Hype</button>
+            <button class="chip" onclick="toggleChip(this)">💼 Professional</button>
+            <button class="chip" onclick="toggleChip(this)">😂 Funny</button>
+            <button class="chip" onclick="toggleChip(this)">💪 Motivational</button>
+            <button class="chip" onclick="toggleChip(this)">❤️ Warm & Personal</button>
+            <button class="chip" onclick="toggleChip(this)">🎯 Sales-Focused</button>
+            <button class="chip" onclick="toggleChip(this)">📖 Educational</button>
+            <button class="chip" onclick="toggleChip(this)">✨ Luxury</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Number of Posts</label>
+            <select id="postCount">
+              <option value="3">3 posts</option>
+              <option value="5" selected>5 posts</option>
+              <option value="7">7 posts</option>
+              <option value="10">10 posts</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Include Hashtags?</label>
+            <select id="includeHashtags">
+              <option value="yes" selected>Yes — include hashtags</option>
+              <option value="no">No hashtags</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Content Calendar</label>
+          <div class="calendar-toggle" onclick="toggleCalendar(this)">
+            <div class="toggle-switch" id="calToggle">
+              <div class="toggle-knob"></div>
+            </div>
+            <span class="toggle-label">Generate a 1-week posting schedule</span>
+          </div>
+        </div>
+
+        <button class="btn-generate" id="generateBtn" onclick="generateContent()">
+          <span>⚡ GENERATE CONTENT</span>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="output-section" id="loadingSection">
+      <div class="loading-state visible">
+        <div class="loader">
+          <div class="loader-dot"></div>
+          <div class="loader-dot"></div>
+          <div class="loader-dot"></div>
+        </div>
+        <div class="loading-text">CRAFTING YOUR CONTENT...</div>
+      </div>
+    </div>
+
+    <div class="output-section" id="outputSection">
+      <div class="output-header">
+        <div class="output-title">YOUR CONTENT IS READY</div>
+        <div class="output-actions">
+          <button class="btn-sm" onclick="copyAll()">Copy All</button>
+          <button class="btn-sm accent" onclick="regenerate()">↺ Regenerate</button>
         </div>
       </div>
-
-      <button class="btn-generate" id="generateBtn" onclick="generateContent()">
-        <span>⚡ GENERATE CONTENT</span>
-      </button>
-
-    </div>
-  </div>
-
-  <!-- Loading -->
-  <div class="output-section" id="loadingSection">
-    <div class="loading-state visible">
-      <div class="loader">
-        <div class="loader-dot"></div>
-        <div class="loader-dot"></div>
-        <div class="loader-dot"></div>
-      </div>
-      <div class="loading-text">CRAFTING YOUR CONTENT...</div>
-    </div>
-  </div>
-
-  <!-- Output -->
-  <div class="output-section" id="outputSection">
-    <div class="output-header">
-      <div class="output-title">YOUR CONTENT IS READY</div>
-      <div class="output-actions">
-        <button class="btn-sm" onclick="copyAll()">Copy All</button>
-        <button class="btn-sm accent" onclick="regenerate()">↺ Regenerate</button>
+      <div class="posts-grid" id="postsGrid"></div>
+      <div id="calendarOutput" style="display:none; padding: 0 28px 28px;">
+        <div class="section-divider"></div>
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1px; margin-bottom:16px;">📅 CONTENT CALENDAR</div>
+        <div class="calendar-grid" id="calGrid"></div>
       </div>
     </div>
-    <div class="posts-grid" id="postsGrid"></div>
-    <div id="calendarOutput" style="display:none; padding: 0 28px 28px;">
-      <div class="section-divider"></div>
-      <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1px; margin-bottom:16px;">📅 CONTENT CALENDAR</div>
-      <div class="calendar-grid" id="calGrid"></div>
-    </div>
-  </div>
 
-  <div class="footer-credit">RUBY WALL © 2025 — CONTENT STUDIO</div>
+    <div class="footer-credit">RUBY WALL © 2025 — CONTENT STUDIO</div>
+  </main>
 
-</main>
+</div>
 
 <script>
+  // ─── VALID INVITE CODES ───
+  const VALID_INVITE_CODES = [
+    'RW-001','RW-002','RW-003','RW-004','RW-005',
+    'RW-006','RW-007','RW-008','RW-009','RW-010',
+    'RW-011','RW-012','RW-013','RW-014','RW-015',
+    'RW-016','RW-017','RW-018','RW-019','RW-020'
+  ];
+
+  // ─── AUTH LOGIC ───
+  const ADMIN_PASSWORD = 'Einstein_Apollo';
+  const SESSION_KEY = 'rw_session';
+
+  function getClients() {
+    try { return JSON.parse(localStorage.getItem('rw_clients') || '{}'); } catch { return {}; }
+  }
+
+  function saveClients(c) { localStorage.setItem('rw_clients', JSON.stringify(c)); }
+
+  function isUsedCode(code) {
+    const clients = getClients();
+    return Object.values(clients).some(c => c.code === code.toUpperCase());
+  }
+
+  function handleLogin() {
+    const pw = document.getElementById('loginPassword').value.trim();
+    const err = document.getElementById('loginError');
+    err.classList.remove('visible');
+
+    if (!pw) return;
+
+    // Admin check
+    if (pw === ADMIN_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ role: 'admin' }));
+      enterApp(true);
+      return;
+    }
+
+    // Client check
+    const clients = getClients();
+    const match = Object.values(clients).find(c => c.password === pw);
+    if (match) {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ role: 'client' }));
+      enterApp(false);
+      return;
+    }
+
+    err.classList.add('visible');
+    document.getElementById('loginPassword').value = '';
+  }
+
+  function handleSignup() {
+    const code = document.getElementById('inviteCode').value.trim().toUpperCase();
+    const pw = document.getElementById('signupPassword').value.trim();
+    const confirm = document.getElementById('signupConfirm').value.trim();
+    const err = document.getElementById('signupError');
+    err.classList.remove('visible');
+    err.textContent = 'Invalid invite code. Contact Ruby Wall to get access.';
+
+    if (!code || !pw || !confirm) return;
+
+    if (!VALID_INVITE_CODES.includes(code)) {
+      err.textContent = 'Invalid invite code. Contact Ruby Wall to get access.';
+      err.classList.add('visible');
+      return;
+    }
+
+    if (isUsedCode(code)) {
+      err.textContent = 'This invite code has already been used.';
+      err.classList.add('visible');
+      return;
+    }
+
+    if (pw !== confirm) {
+      err.textContent = 'Passwords do not match.';
+      err.classList.add('visible');
+      return;
+    }
+
+    if (pw.length < 6) {
+      err.textContent = 'Password must be at least 6 characters.';
+      err.classList.add('visible');
+      return;
+    }
+
+    // Save client
+    const clients = getClients();
+    clients[code] = { code, password: pw, created: new Date().toISOString() };
+    saveClients(clients);
+
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ role: 'client' }));
+    enterApp(false);
+  }
+
+  function enterApp(isAdmin) {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('signupScreen').classList.add('hidden');
+    document.getElementById('appWrap').classList.add('visible');
+    if (isAdmin) document.getElementById('adminBadge').classList.add('visible');
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    document.getElementById('appWrap').classList.remove('visible');
+    document.getElementById('adminBadge').classList.remove('visible');
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').classList.remove('visible');
+    showLogin();
+  }
+
+  function showLogin() {
+    document.getElementById('signupScreen').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+  }
+
+  function showSignup() {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('signupScreen').classList.remove('hidden');
+  }
+
+  // Auto-login if session exists
+  window.addEventListener('load', () => {
+    const session = sessionStorage.getItem(SESSION_KEY);
+    if (session) {
+      try {
+        const s = JSON.parse(session);
+        enterApp(s.role === 'admin');
+      } catch { /* expired */ }
+    }
+  });
+
+  // ─── APP LOGIC ───
   let activePlatform = 'instagram';
   let calendarEnabled = false;
   let lastParams = null;
@@ -772,14 +1002,11 @@
     activePlatform = platform;
   }
 
-  function toggleChip(el) {
-    el.classList.toggle('selected');
-  }
+  function toggleChip(el) { el.classList.toggle('selected'); }
 
   function toggleCalendar(el) {
     calendarEnabled = !calendarEnabled;
-    const toggle = document.getElementById('calToggle');
-    toggle.classList.toggle('on', calendarEnabled);
+    document.getElementById('calToggle').classList.toggle('on', calendarEnabled);
   }
 
   function getSelectedTones() {
@@ -811,16 +1038,16 @@
     document.getElementById('loadingSection').classList.add('visible');
     document.getElementById('outputSection').classList.remove('visible');
 
-    const platformText = activePlatform === 'all' 
+    const platformText = activePlatform === 'all'
       ? 'Instagram, Facebook, and TikTok (write one version per platform)'
       : getPlatformLabel(activePlatform);
 
-    const hashtagNote = includeHashtags 
+    const hashtagNote = includeHashtags
       ? 'Include 5-8 relevant hashtags at the end of each post on a new line.'
       : 'Do NOT include hashtags.';
 
     const calendarNote = calendarEnabled
-      ? `Also create a simple 7-day posting schedule showing which post to use on which day (Mon-Sun). Label this section CALENDAR.`
+      ? 'Also create a simple 7-day posting schedule showing which post to use on which day (Mon-Sun). Label this section CALENDAR.'
       : '';
 
     const prompt = `You are a top-tier social media copywriter for local businesses.
@@ -854,14 +1081,11 @@ ${includeHashtags ? '[hashtags]' : ''}
       const response = await fetch('https://rubywallapi.gideonmoffitt08.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: prompt }]
-        })
+        body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
       });
 
       const data = await response.json();
       const text = data.content.map(i => i.text || '').join('');
-      
       renderPosts(text, includeHashtags);
       if (calendarEnabled) renderCalendar(text);
 
@@ -877,44 +1101,24 @@ ${includeHashtags ? '[hashtags]' : ''}
   function renderPosts(text, includeHashtags) {
     const grid = document.getElementById('postsGrid');
     grid.innerHTML = '';
-
-    // Split by POST markers
     const parts = text.split(/POST\s*\d+[:\.]?/i).filter(p => p.trim());
 
-    const platformColors = {
-      instagram: 'instagram',
-      facebook: 'facebook',
-      tiktok: 'tiktok',
-      all: ['instagram', 'facebook', 'tiktok']
-    };
-
     parts.forEach((part, i) => {
-      // Separate hashtags from post body
       const lines = part.trim().split('\n');
       let hashtags = '';
       let bodyLines = [];
 
       lines.forEach(line => {
-        if (line.trim().startsWith('#')) {
-          hashtags += line.trim() + ' ';
-        } else if (line.trim() === '---') {
-          // skip
-        } else if (line.trim()) {
-          bodyLines.push(line.trim());
-        }
+        if (line.trim().startsWith('#')) hashtags += line.trim() + ' ';
+        else if (line.trim() === '---') return;
+        else if (line.trim()) bodyLines.push(line.trim());
       });
 
       const body = bodyLines.join('\n');
       if (!body) return;
 
-      let platformClass;
-      if (activePlatform === 'all') {
-        platformClass = ['instagram', 'facebook', 'tiktok'][i % 3];
-      } else {
-        platformClass = activePlatform;
-      }
-
-      const platformLabels = { instagram: '📸 Instagram', facebook: '👥 Facebook', tiktok: '🎵 TikTok', twitter: '🐦 Twitter' };
+      let platformClass = activePlatform === 'all' ? ['instagram','facebook','tiktok'][i % 3] : activePlatform;
+      const platformLabels = { instagram: '📸 Instagram', facebook: '👥 Facebook', tiktok: '🎵 TikTok' };
 
       const card = document.createElement('div');
       card.className = 'post-card';
@@ -937,36 +1141,22 @@ ${includeHashtags ? '[hashtags]' : ''}
   function renderCalendar(text) {
     const calOutput = document.getElementById('calendarOutput');
     const calGrid = document.getElementById('calGrid');
-    
-    // Check if CALENDAR section exists
-    const calSection = text.match(/CALENDAR[\s\S]*/i);
-    
-    const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-    const colors = ['', 'pink', 'cyan', '', 'pink', 'cyan', ''];
-    
+    const days = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+    const colors = ['','pink','cyan','','pink','cyan',''];
     calGrid.innerHTML = '';
-    
-    // Headers
     days.forEach(d => {
       const h = document.createElement('div');
       h.className = 'cal-header';
       h.textContent = d;
       calGrid.appendChild(h);
     });
-
-    // Day cells
-    const postTitles = ['Brand Story', 'Promo Post', 'Behind Scenes', 'Tips & Value', 'Call to Action', 'Weekend Hype', 'Community Love'];
-    
+    const postTitles = ['Brand Story','Promo Post','Behind Scenes','Tips & Value','Call to Action','Weekend Hype','Community Love'];
     days.forEach((d, i) => {
       const cell = document.createElement('div');
       cell.className = 'cal-day';
-      cell.innerHTML = `
-        <div class="cal-day-num">${i + 1}</div>
-        <div class="cal-post-tag ${colors[i]}">${postTitles[i]}</div>
-      `;
+      cell.innerHTML = `<div class="cal-day-num">${i + 1}</div><div class="cal-post-tag ${colors[i]}">${postTitles[i]}</div>`;
       calGrid.appendChild(cell);
     });
-
     calOutput.style.display = 'block';
   }
 
@@ -986,14 +1176,10 @@ ${includeHashtags ? '[hashtags]' : ''}
 
   function copyAll() {
     const posts = [...document.querySelectorAll('.post-text')].map(el => el.innerText).join('\n\n---\n\n');
-    navigator.clipboard.writeText(posts).then(() => {
-      alert('All posts copied to clipboard!');
-    });
+    navigator.clipboard.writeText(posts).then(() => alert('All posts copied!'));
   }
 
-  function regenerate() {
-    if (lastParams) generateContent();
-  }
+  function regenerate() { if (lastParams) generateContent(); }
 </script>
 
 </body>

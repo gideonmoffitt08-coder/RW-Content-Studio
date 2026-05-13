@@ -696,24 +696,26 @@ function toggleEmail() {
 
 // ── System Prompt ─────────────────────────────────────────────────────
 function buildSystemPrompt() {
-  return `You are ${config.botName}, an AI assistant for ${config.businessName || 'this business'}.
+  return `You are ${config.botName}, the friendly assistant at ${config.businessName || 'this business'}. You work here and represent this business directly.
 
-Your tone is ${config.tone}. Keep responses concise and helpful (2-4 sentences max).
+Tone: ${config.tone}. Keep every response to 1-2 sentences max — short, warm, and helpful.
 
 Business Hours: ${config.businessHours || 'Contact us for hours'}
-Services: ${config.services || 'Please ask about our services'}
+Services: ${config.services || 'Ask me about our services'}
 FAQs: ${config.faqs || ''}
 
-Your job is to:
-1. Answer questions about the business warmly and helpfully
-2. Capture leads by asking for their name, phone number, and what service they're interested in
-3. For booking/appointment requests, collect their info and let them know the team will follow up
+Rules:
+- Always respond AS the business, never about the business from the outside
+- Never say things like "I'm only here to help with this business" — just naturally help the visitor
+- If someone asks an off-topic question, briefly answer it then gently bring the conversation back
+- Your main goal is to help visitors and collect their contact info (name, phone, service interest)
+- Ask for contact info naturally, one question at a time, only after engaging with their needs
+- If someone wants to book or get a quote, collect their info and tell them the team will be in touch shortly
 
-When you have collected a lead (name + phone + service interest), output a special JSON block at the END of your message ONLY, formatted exactly like this:
+When you have collected name + phone + service interest, add this at the END of your message:
 LEAD_CAPTURE:{"name":"...","phone":"...","service":"..."}
 
-Do not output the LEAD_CAPTURE block until you have all three pieces of info. Ask naturally, one at a time.
-Never make up information about the business. If unsure, say you'll have someone follow up.`;
+Do not add LEAD_CAPTURE until you have all three. Never make up business info — if unsure, say the team will follow up.`;
 }
 
 // ── Chat ──────────────────────────────────────────────────────────────
@@ -773,7 +775,7 @@ async function sendMsg(widget) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
         system: buildSystemPrompt(),
         messages: histories[widget].map(m => ({ role: m.role, content: m.content })),
@@ -891,7 +893,7 @@ function generateEmbedCode() {
   const msgsEl=document.getElementById('rw-msgs'),bubble=document.getElementById('rw-bubble'),widget=document.getElementById('rw-widget'),input=document.getElementById('rw-input'),sendBtn=document.getElementById('rw-send');
   let open=false;
   function render(){msgsEl.innerHTML=msgs.map(m=>\`<div style="display:flex;justify-content:\${m.role==='user'?'flex-end':'flex-start'}"><div style="max-width:75%;background:\${m.role==='user'?CONFIG.primaryColor:'rgba(255,255,255,0.06)'};color:#f0f0f0;padding:10px 14px;border-radius:\${m.role==='user'?'18px 18px 4px 18px':'18px 18px 18px 4px'};font-size:14px;line-height:1.5">\${m.content}</div></div>\`).join('');msgsEl.scrollTop=msgsEl.scrollHeight;}
-  async function send(){const txt=input.value.trim();if(!txt)return;msgs.push({role:'user',content:txt});input.value='';render();try{const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:SYSTEM,messages:msgs})});const data=await res.json();let text=data.content?.[0]?.text||'Sorry, try again.';const lm=text.match(/LEAD_CAPTURE:(\\{.*?\\})/);if(lm){try{const lead=JSON.parse(lm[1]);text=text.replace(/LEAD_CAPTURE:\\{.*?\\}/,'').trim();if(CONFIG.emailLeads&&CONFIG.formspreeId){fetch('https://formspree.io/f/'+CONFIG.formspreeId,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({business:CONFIG.businessName,...lead,source:'Ruby Wall Chatbot'})});}}catch(e){}}msgs.push({role:'assistant',content:text});}catch(e){msgs.push({role:'assistant',content:'Connection error. Please try again.'});}render();}
+  async function send(){const txt=input.value.trim();if(!txt)return;msgs.push({role:'user',content:txt});input.value='';render();try{const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM,messages:msgs})});const data=await res.json();let text=data.content?.[0]?.text||'Sorry, try again.';const lm=text.match(/LEAD_CAPTURE:(\\{.*?\\})/);if(lm){try{const lead=JSON.parse(lm[1]);text=text.replace(/LEAD_CAPTURE:\\{.*?\\}/,'').trim();if(CONFIG.emailLeads&&CONFIG.formspreeId){fetch('https://formspree.io/f/'+CONFIG.formspreeId,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({business:CONFIG.businessName,...lead,source:'Ruby Wall Chatbot'})});}}catch(e){}}msgs.push({role:'assistant',content:text});}catch(e){msgs.push({role:'assistant',content:'Connection error. Please try again.'});}render();}
   bubble.onclick=()=>{open=!open;widget.style.display=open?'flex':'none';if(open)render();};
   sendBtn.onclick=send;input.addEventListener('keydown',e=>e.key==='Enter'&&send());
   render();

@@ -1512,6 +1512,10 @@ Guidelines:
 - ${lengthNote}
 - ${compNote}
 - Each post should make someone want to either visit, share, or save it
+- NEVER mention or reference any other brand, company, or trademark by name (e.g. Nike, Mercedes, Apple, etc.)
+- Do not use other brands as status signals or quality comparisons (e.g. "Mercedes-level quality" or "Apple-like design")
+- Describe quality and audience in original language only — e.g. "premium", "luxury-level polish", "high-end", "exceptional" — never borrowed from another brand's reputation
+- If comparing quality or style, use descriptive language that stands on its own without implying association with or endorsement by any other company
 
 ${calNote}
 
@@ -1663,7 +1667,7 @@ async function regenOne(btn, idx){
   btn.textContent='Rewriting...';
   btn.disabled=true;
 
-  const prompt = `You are a social media copywriter. Write ONE fresh social media post for ${state.bizName}, a ${state.industry} business. Tone: ${state.vibe}. Platform: ${state.platform}. ${state.promo ? 'Focus: '+state.promo : ''} Make it completely different from anything typical. Sound human, not corporate. No cliché openers. Short punchy sentences. ${state.hashtags ? 'Add 5 hashtags at the end.' : 'No hashtags.'} Return just the post text, nothing else.`;
+  const prompt = `You are a social media copywriter. Write ONE fresh social media post for ${state.bizName}, a ${state.industry} business. Tone: ${state.vibe}. Platform: ${state.platform}. ${state.promo ? 'Focus: '+state.promo : ''} Make it completely different from anything typical. Sound human, not corporate. No cliché openers. Short punchy sentences. Never reference any other brand or company by name. Use original language to describe quality. ${state.hashtags ? 'Add 5 hashtags at the end.' : 'No hashtags.'} Return just the post text, nothing else.`;
 
   try {
     const res = await fetch('https://rubywallapi.gideonmoffitt08.workers.dev',{

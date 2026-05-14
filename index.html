@@ -752,10 +752,27 @@ main {
       </div>
 
       <div class="big-input-wrap">
+        <label class="big-label">Post Length</label>
+        <div class="platform-row">
+          <button class="ptab on" id="lenShort" onclick="setLen('short')">⚡ Short</button>
+          <button class="ptab" id="lenMed" onclick="setLen('medium')">📝 Medium</button>
+          <button class="ptab" id="lenLong" onclick="setLen('long')">📄 Long</button>
+        </div>
+      </div>
+
+      <div class="big-input-wrap">
         <label class="big-label">Include Hashtags?</label>
         <div class="platform-row">
           <button class="ptab on" id="hashYes" onclick="setHash(true)">Yes please</button>
           <button class="ptab" id="hashNo" onclick="setHash(false)">No thanks</button>
+        </div>
+      </div>
+
+      <div class="big-input-wrap">
+        <label class="big-label">Position as the #1 choice in your area?</label>
+        <div class="platform-row">
+          <button class="ptab" id="compYes" onclick="setComp(true)">Yes — stand out</button>
+          <button class="ptab on" id="compNo" onclick="setComp(false)">Not this time</button>
         </div>
       </div>
 
@@ -789,6 +806,7 @@ main {
       <div class="results-header">
         <div class="results-title">Your content <span>is ready.</span></div>
         <div class="results-actions">
+          <button class="r-btn" onclick="exportDoc()">⬇ Export Doc</button>
           <button class="r-btn" onclick="copyAll()">Copy All</button>
           <button class="r-btn solid" onclick="startOver()">↺ New Session</button>
         </div>
@@ -869,7 +887,8 @@ window.addEventListener('load',()=>{
 let state = {
   industry:'', vibe:'', bizName:'',
   promo:'', platform:'instagram',
-  count:5, hashtags:true, calendar:false
+  count:5, hashtags:true, calendar:false,
+  length:'short', competitor:false
 };
 
 function pickIndustry(el, val){
@@ -917,6 +936,19 @@ function setCal(val){
   state.calendar = val;
   document.getElementById('calYes').classList.toggle('on', val);
   document.getElementById('calNo').classList.toggle('on', !val);
+}
+
+function setLen(val){
+  state.length = val;
+  document.getElementById('lenShort').classList.toggle('on', val==='short');
+  document.getElementById('lenMed').classList.toggle('on', val==='medium');
+  document.getElementById('lenLong').classList.toggle('on', val==='long');
+}
+
+function setComp(val){
+  state.competitor = val;
+  document.getElementById('compYes').classList.toggle('on', val);
+  document.getElementById('compNo').classList.toggle('on', !val);
 }
 
 function goStep(n){
@@ -988,6 +1020,16 @@ async function generate(){
     ? 'After the posts, add a section called CALENDAR showing a 7-day posting schedule (Mon-Sun).'
     : '';
 
+  const lengthNote = state.length === 'short'
+    ? 'Keep each post SHORT — maximum 2-3 punchy sentences. Every word counts.'
+    : state.length === 'medium'
+    ? 'Keep each post MEDIUM length — 4-6 sentences. Enough to tell a story, short enough to hold attention.'
+    : 'Write LONGER posts — 7+ sentences. Tell a full story, add details, give real value.';
+
+  const compNote = state.competitor
+    ? 'Subtly position this business as the clear best choice in the local area — without naming competitors. Use confident language that implies they are the go-to option.'
+    : '';
+
   const prompt = `You're a social media expert who writes content for local businesses. You write like a real human — not corporate, not stiff. You understand what actually stops people from scrolling.
 
 Business: ${state.bizName}
@@ -1001,10 +1043,11 @@ Write exactly ${state.count} social media posts. Make each one completely differ
 Guidelines:
 - Open with something that makes you stop scrolling. No "Are you looking for..." or "Introducing..." or any cliché opener.
 - Sound like a real person who loves their business, not a marketing department
-- Short punchy sentences. White space. Easy to read on a phone.
 - Use emojis naturally — how a real person would, not plastered everywhere
 - Speak directly to someone who lives nearby
 - ${hashNote}
+- ${lengthNote}
+- ${compNote}
 - Each post should make someone want to either visit, share, or save it
 
 ${calNote}
@@ -1184,13 +1227,44 @@ function copyOne(btn, idx){
   });
 }
 
+function exportDoc(){
+  const platLabels = {instagram:'📸 Instagram', facebook:'👥 Facebook', tiktok:'🎵 TikTok'};
+  const bodyEls = [...document.querySelectorAll('[id^="postBody"]')];
+  const lines = [];
+  lines.push('RUBY WALL CONTENT STUDIO');
+  lines.push('Generated for: ' + state.bizName);
+  lines.push('Date: ' + new Date().toLocaleDateString());
+  lines.push('Platform: ' + (state.platform === 'all' ? 'All Platforms' : state.platform.charAt(0).toUpperCase()+state.platform.slice(1)));
+  lines.push('');
+  lines.push('═'.repeat(40));
+  lines.push('');
+  bodyEls.forEach((el, i)=>{
+    const platKey = state.platform==='all' ? ['instagram','facebook','tiktok'][i%3] : state.platform;
+    const platLabel = platLabels[platKey] || '📸 Instagram';
+    lines.push('POST ' + (i+1) + ' — ' + platLabel);
+    lines.push('─'.repeat(30));
+    lines.push(el.innerText);
+    lines.push('');
+    lines.push('');
+  });
+  lines.push('═'.repeat(40));
+  lines.push('Powered by Ruby Wall Content Studio');
+  const blob = new Blob([lines.join('\n')], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = state.bizName.replace(/\s+/g,'_')+'_content_'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function copyAll(){
   const posts = [...document.querySelectorAll('[id^="postBody"]')].map(el=>el.innerText).join('\n\n---\n\n');
   navigator.clipboard.writeText(posts).then(()=>alert('All posts copied!'));
 }
 
 function startOver(){
-  state = {industry:'',vibe:'',bizName:'',promo:'',platform:'instagram',count:5,hashtags:true,calendar:false};
+  state = {industry:'',vibe:'',bizName:'',promo:'',platform:'instagram',count:5,hashtags:true,calendar:false,length:'short',competitor:false};
   document.querySelectorAll('.qcard').forEach(c=>c.classList.remove('picked'));
   document.getElementById('bizName').value='';
   document.getElementById('bizPromo').value='';

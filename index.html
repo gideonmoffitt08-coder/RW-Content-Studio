@@ -581,6 +581,177 @@ main {
 }
 .start-over:hover { color:var(--ruby2); }
 
+
+/* ══════════════════════════════
+   BRAND VOICE TRAINER
+══════════════════════════════ */
+.bvt-wrap {
+  position:fixed; inset:0; z-index:250;
+  background:var(--dark);
+  display:flex; align-items:center; justify-content:center;
+  padding:24px; overflow-y:auto;
+}
+.bvt-wrap.gone { display:none; }
+
+.bvt-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:48px 40px;
+  width:100%; max-width:580px;
+  position:relative; overflow:hidden;
+  animation: riseUp .5s cubic-bezier(.16,1,.3,1) both;
+  margin:auto;
+}
+.bvt-card::after {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, var(--ruby), transparent);
+}
+
+.bvt-progress {
+  display:flex; gap:5px; margin-bottom:36px;
+}
+.bvt-prog-bar {
+  height:3px; border-radius:2px; flex:1;
+  background:var(--border2); transition:background .3s;
+}
+.bvt-prog-bar.done { background:var(--ruby); }
+.bvt-prog-bar.active { background:var(--ruby2); }
+
+.bvt-qnum {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:3px;
+  color:var(--ruby2); margin-bottom:10px;
+}
+.bvt-question {
+  font-family:'Fraunces',serif;
+  font-size:22px; font-weight:700;
+  line-height:1.3; margin-bottom:28px;
+  color:var(--text);
+}
+.bvt-question em { color:var(--ruby2); font-style:italic; }
+
+.bvt-options {
+  display:flex; flex-direction:column; gap:10px;
+  margin-bottom:28px;
+}
+.bvt-opt {
+  background:#0f0a0e;
+  border:1px solid var(--border2);
+  border-radius:14px; padding:14px 18px;
+  cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; gap:12px;
+  text-align:left;
+}
+.bvt-opt:hover { border-color:rgba(217,0,55,.4); background:rgba(217,0,55,.05); }
+.bvt-opt.chosen { border-color:var(--ruby); background:rgba(217,0,55,.1); }
+.bvt-opt.chosen .bvt-opt-check { opacity:1; }
+.bvt-opt-check {
+  width:18px; height:18px; border-radius:50%;
+  background:var(--ruby); flex-shrink:0; opacity:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:#fff; transition:opacity .2s;
+}
+.bvt-opt-text { font-size:14px; color:var(--text); line-height:1.4; }
+.bvt-opt-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+
+.bvt-text-input {
+  background:#0f0a0e;
+  border:1px solid var(--border2);
+  border-radius:14px; color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-size:15px; padding:16px 18px;
+  outline:none; width:100%; margin-bottom:28px;
+  -webkit-appearance:none; transition:border-color .2s;
+  resize:none;
+}
+.bvt-text-input:focus { border-color:var(--ruby); }
+
+.bvt-nav {
+  display:flex; gap:10px; align-items:center;
+}
+.bvt-next {
+  flex:1; padding:15px;
+  background:linear-gradient(135deg, var(--ruby), #8B0020);
+  border:none; border-radius:14px; color:#fff;
+  font-family:'Fraunces',serif;
+  font-size:18px; font-weight:700; font-style:italic;
+  cursor:pointer; transition:all .2s;
+}
+.bvt-next:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(217,0,55,.4); }
+.bvt-next:disabled { opacity:.35; transform:none; cursor:not-allowed; }
+.bvt-back {
+  padding:15px 20px;
+  background:transparent; border:1px solid var(--border2);
+  border-radius:14px; color:var(--muted);
+  font-size:14px; cursor:pointer; transition:all .2s;
+  font-family:'Outfit',sans-serif;
+}
+.bvt-back:hover { border-color:var(--ruby2); color:var(--ruby2); }
+
+.bvt-skip {
+  display:block; text-align:center;
+  margin-top:16px; font-size:12px;
+  color:var(--muted); cursor:pointer; transition:color .2s;
+}
+.bvt-skip:hover { color:var(--ruby2); }
+
+/* Voice badge shown in nav */
+.voice-badge {
+  display:none; align-items:center; gap:5px;
+  background:rgba(201,168,76,.12);
+  border:1px solid rgba(201,168,76,.25);
+  border-radius:20px; padding:4px 12px;
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:2px; color:var(--gold);
+  cursor:pointer;
+}
+.voice-badge.on { display:flex; }
+
+/* Settings panel */
+.settings-panel {
+  position:fixed; inset:0; z-index:240;
+  background:rgba(8,4,8,.95);
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+}
+.settings-panel.gone { display:none; }
+.settings-inner {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:24px; padding:36px;
+  width:100%; max-width:480px;
+  animation:riseUp .3s ease both;
+}
+.settings-title {
+  font-family:'Fraunces',serif;
+  font-size:24px; font-weight:700;
+  margin-bottom:6px;
+}
+.settings-sub { font-size:13px; color:var(--muted); margin-bottom:24px; }
+.settings-voice-summary {
+  background:#0f0a0e;
+  border:1px solid var(--border2);
+  border-radius:14px; padding:20px;
+  margin-bottom:20px;
+  font-size:13px; color:var(--muted);
+  line-height:1.8;
+}
+.settings-voice-summary strong { color:var(--text); }
+.settings-btns { display:flex; gap:10px; }
+.s-btn {
+  flex:1; padding:13px;
+  border-radius:12px; font-size:13px;
+  cursor:pointer; transition:all .2s;
+  font-family:'Outfit',sans-serif; font-weight:600;
+  border:none;
+}
+.s-btn.retrain { background:var(--ruby); color:#fff; }
+.s-btn.retrain:hover { background:var(--ruby2); }
+.s-btn.close-s { background:var(--border2); color:var(--text); }
+.s-btn.close-s:hover { background:rgba(255,255,255,.1); }
+
 /* Animations */
 @keyframes riseUp {
   from { opacity:0; transform:translateY(20px); }
@@ -651,6 +822,35 @@ main {
   </div>
 </div>
 
+
+<!-- ══════════ BRAND VOICE TRAINER ══════════ -->
+<div class="bvt-wrap gone" id="bvtWrap">
+  <div class="bvt-card">
+    <div class="bvt-progress" id="bvtProgress"></div>
+    <div class="bvt-qnum" id="bvtQNum">QUESTION 1 OF 10</div>
+    <div class="bvt-question" id="bvtQuestion"></div>
+    <div id="bvtBody"></div>
+    <div class="bvt-nav">
+      <button class="bvt-back" id="bvtBack" onclick="bvtPrev()">←</button>
+      <button class="bvt-next" id="bvtNextBtn" onclick="bvtNext()" disabled>Continue →</button>
+    </div>
+    <a class="bvt-skip" onclick="skipBVT()">Skip for now — set up later</a>
+  </div>
+</div>
+
+<!-- ══════════ SETTINGS PANEL ══════════ -->
+<div class="settings-panel gone" id="settingsPanel">
+  <div class="settings-inner">
+    <div class="settings-title">Your Brand Voice</div>
+    <div class="settings-sub">This is how the AI writes content for your business.</div>
+    <div class="settings-voice-summary" id="voiceSummary"></div>
+    <div class="settings-btns">
+      <button class="s-btn retrain" onclick="retrain()">✦ Retrain My Voice</button>
+      <button class="s-btn close-s" onclick="closeSettings()">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ APP ══════════ -->
 <div class="app" id="theApp">
 
@@ -659,6 +859,7 @@ main {
     <div class="nav-right">
       <div class="admin-pill" id="adminPill">⚡ ADMIN</div>
       <div class="nav-ai">AI POWERED</div>
+      <div class="voice-badge" id="voiceBadge" onclick="openSettings()">🎙 My Voice</div>
       <button class="nav-out" onclick="doLogout()">Sign Out</button>
     </div>
   </nav>
@@ -676,7 +877,7 @@ main {
     <!-- STEP 1: Industry -->
     <div class="step active" id="step1">
       <div class="step-eyebrow">Step 1 of 3</div>
-      <div class="step-title">What's your <em>business?</em></div>
+      <div class="step-title">What is your <em>business?</em></div>
       <p class="step-sub">Pick the category that fits best — we'll tailor the content to your world.</p>
       <div class="quiz-grid" id="industryGrid">
         <div class="qcard" onclick="pickIndustry(this,'Restaurant / Food')"><div class="qcard-icon">🍽️</div><div class="qcard-label">Restaurant</div><div class="qcard-sub">Food & dining</div></div>
@@ -697,7 +898,7 @@ main {
     <div class="step" id="step2">
       <div class="step-eyebrow">Step 2 of 3</div>
       <div class="step-title">Your <em>vibe</em> & details</div>
-      <p class="step-sub">Tell us who you are and what you're pushing right now.</p>
+      <p class="step-sub">Tell us who you are and what you are pushing right now.</p>
 
       <div class="big-input-wrap">
         <label class="big-label">Business Name</label>
@@ -859,12 +1060,7 @@ function doSignup(){
   enterApp(false);
 }
 
-function enterApp(isAdmin){
-  document.getElementById('authLogin').classList.add('gone');
-  document.getElementById('authSignup').classList.add('gone');
-  document.getElementById('theApp').classList.add('on');
-  if(isAdmin) document.getElementById('adminPill').classList.add('on');
-}
+// enterApp defined in BVT section below
 
 function doLogout(){
   sessionStorage.removeItem(SESS);
@@ -882,6 +1078,269 @@ window.addEventListener('load',()=>{
   const s = sessionStorage.getItem(SESS);
   if(s){ try{ const d=JSON.parse(s); enterApp(d.role==='admin'); }catch{} }
 });
+
+
+// ══════════ BRAND VOICE TRAINER ══════════
+const BVT_KEY = 'rw_brand_voice';
+
+const BVT_QUESTIONS = [
+  {
+    id:'personality',
+    q:'If your business was a <em>person</em>, how would they talk?',
+    type:'choice',
+    opts:[
+      {icon:'🎯',label:'Straight Shooter',sub:'Direct, no fluff, says it like it is',val:'direct and no-nonsense, gets straight to the point without fluff'},
+      {icon:'📖',label:'Storyteller',sub:'Draws people in with narrative and detail',val:'narrative-driven, uses stories and vivid details to connect'},
+      {icon:'🔥',label:'Hype Man',sub:'Big energy, makes everything exciting',val:'high energy and enthusiastic, makes everything sound exciting'},
+      {icon:'🤝',label:'Best Friend',sub:'Casual, warm, like texting someone you trust',val:'casual and warm, like texting a trusted friend'}
+    ]
+  },
+  {
+    id:'avoid',
+    q:'What do you <em>never</em> want your content to sound like?',
+    type:'choice',
+    opts:[
+      {icon:'🏢',label:'Corporate',sub:'Stiff, formal, like a press release',val:'corporate or overly formal'},
+      {icon:'📢',label:'Pushy',sub:'Salesy, desperate, always hard selling',val:'pushy or salesy'},
+      {icon:'😴',label:'Boring',sub:'Flat, no personality, forgettable',val:'boring or generic with no personality'},
+      {icon:'🎭',label:'Fake',sub:'Inauthentic, trying too hard',val:'fake or inauthentic'}
+    ]
+  },
+  {
+    id:'audience',
+    q:'Who are your <em>customers</em>, mostly?',
+    type:'choice',
+    opts:[
+      {icon:'🧑',label:'Young Adults',sub:'18-30, social media natives',val:'young adults aged 18-30 who are social media savvy'},
+      {icon:'👨‍👩‍👧',label:'Families',sub:'Parents, households, community-focused',val:'families and parents who value community and reliability'},
+      {icon:'💼',label:'Professionals',sub:'Working adults, career-minded',val:'working professionals who value quality and efficiency'},
+      {icon:'🌍',label:'Everyone',sub:'Broad mix of the local community',val:'a broad mix of the local community'}
+    ]
+  },
+  {
+    id:'reputation',
+    q:'When a happy customer leaves, what do you want them to tell their friends?',
+    type:'choice',
+    opts:[
+      {icon:'⭐',label:'The quality is unreal',sub:'You are known for being the best at what you do',val:'exceptional quality that stands out above everyone else'},
+      {icon:'💰',label:'The price is unbeatable',sub:'Great value, nobody does it cheaper',val:'incredible value and unbeatable pricing'},
+      {icon:'❤️',label:'It felt like family',sub:'The experience and warmth keeps people coming back',val:'a warm welcoming experience that feels like family'},
+      {icon:'🏆',label:'They are the best, period',sub:'Clear authority in their field',val:'clear authority and expertise in their field'}
+    ]
+  },
+  {
+    id:'humor',
+    q:'How much <em>humor</em> do you want in your posts?',
+    type:'choice',
+    opts:[
+      {icon:'😂',label:'Always',sub:'Keep it fun, people love a laugh',val:'frequent humor and wit throughout'},
+      {icon:'😄',label:'Sometimes',sub:'Light touches when it fits naturally',val:'occasional light humor when it fits naturally'},
+      {icon:'😐',label:'Rarely',sub:'Keep it mostly professional',val:'rarely, keep it mostly professional'},
+      {icon:'🚫',label:'Never',sub:'Serious business only',val:'never, maintain a fully professional tone'}
+    ]
+  },
+  {
+    id:'local',
+    q:'How <em>local</em> do you want your content to feel?',
+    type:'choice',
+    opts:[
+      {icon:'📍',label:'Very Local',sub:'Shout out the city, community vibe, neighborhood pride',val:'very locally rooted, reference the community, city, and neighborhood pride'},
+      {icon:'🌐',label:'Broader Appeal',sub:'Not too tied to one location, speaks to anyone',val:'broader appeal that speaks to anyone regardless of location'}
+    ]
+  },
+  {
+    id:'threewords',
+    q:'Describe your business in <em>3 words</em>.',
+    type:'text',
+    placeholder:'e.g. Fast, Friendly, Reliable',
+    hint:'These become part of your brand DNA'
+  },
+  {
+    id:'flex',
+    q:'What is your <em>biggest flex</em> — what do you do better than anyone?',
+    type:'choice',
+    opts:[
+      {icon:'💎',label:'Quality',sub:'The work speaks for itself',val:'unmatched quality in everything they do'},
+      {icon:'⚡',label:'Speed',sub:'Fast turnaround, no waiting',val:'exceptional speed and quick turnaround'},
+      {icon:'🤝',label:'Service',sub:'Customer experience above all',val:'outstanding customer service that goes above and beyond'},
+      {icon:'💡',label:'Expertise',sub:'Deep knowledge, trusted authority',val:'deep expertise and trusted authority in their field'},
+      {icon:'💵',label:'Value',sub:'Best bang for the buck',val:'the best value for money in their market'}
+    ]
+  },
+  {
+    id:'dreamcustomer',
+    q:'Describe your <em>dream customer</em> in one sentence.',
+    type:'text',
+    placeholder:'e.g. A busy mom who wants quick healthy meals for her family',
+    hint:'The more specific the better — we write to this person'
+  },
+  {
+    id:'feeling',
+    q:'After reading your posts, how do you want people to <em>feel</em>?',
+    type:'choice',
+    opts:[
+      {icon:'🚀',label:'Inspired',sub:'Ready to take action, motivated',val:'inspired and motivated to take action'},
+      {icon:'📚',label:'Informed',sub:'Smarter, learned something valuable',val:'informed and educated with valuable knowledge'},
+      {icon:'😊',label:'Entertained',sub:'Enjoyed it, want to share it',val:'entertained and delighted, wanting to share'},
+      {icon:'🛒',label:'Ready to Buy',sub:'Convinced, ready to reach out now',val:'ready to buy or reach out immediately'}
+    ]
+  }
+];
+
+let bvtCurrent = 0;
+let bvtAnswers = {};
+
+function getBrandVoice(){ try{ return JSON.parse(localStorage.getItem(BVT_KEY)||'null'); }catch{ return null; } }
+function saveBrandVoice(v){ localStorage.setItem(BVT_KEY, JSON.stringify(v)); }
+
+function enterApp(isAdmin){
+  document.getElementById('authLogin').classList.add('gone');
+  document.getElementById('authSignup').classList.add('gone');
+  if(isAdmin) document.getElementById('adminPill').classList.add('on');
+  const voice = getBrandVoice();
+  if(voice){
+    document.getElementById('theApp').classList.add('on');
+    document.getElementById('voiceBadge').classList.add('on');
+  } else {
+    startBVT();
+  }
+}
+
+function startBVT(){
+  bvtCurrent = 0;
+  bvtAnswers = {};
+  document.getElementById('bvtWrap').classList.remove('gone');
+  document.getElementById('theApp').classList.add('on');
+  renderBVTQuestion();
+}
+
+function renderBVTQuestion(){
+  const q = BVT_QUESTIONS[bvtCurrent];
+  const total = BVT_QUESTIONS.length;
+
+  // Progress bars
+  const prog = document.getElementById('bvtProgress');
+  prog.innerHTML = BVT_QUESTIONS.map((_,i)=>
+    `<div class="bvt-prog-bar ${i<bvtCurrent?'done':i===bvtCurrent?'active':''}"></div>`
+  ).join('');
+
+  document.getElementById('bvtQNum').textContent = `QUESTION ${bvtCurrent+1} OF ${total}`;
+  document.getElementById('bvtQuestion').innerHTML = q.q;
+  document.getElementById('bvtBack').style.display = bvtCurrent === 0 ? 'none' : 'block';
+
+  const body = document.getElementById('bvtBody');
+  const nextBtn = document.getElementById('bvtNextBtn');
+  nextBtn.disabled = !bvtAnswers[q.id];
+
+  if(q.type === 'choice'){
+    body.innerHTML = '';
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'bvt-options';
+    q.opts.forEach((o)=>{
+      const div = document.createElement('div');
+      div.className = 'bvt-opt' + (bvtAnswers[q.id]===o.val?' chosen':'');
+      div.innerHTML = `<div class="bvt-opt-check">✓</div><div><div class="bvt-opt-text">${o.icon} ${o.label}</div><div class="bvt-opt-sub">${o.sub}</div></div>`;
+      div.addEventListener('click', ()=>bvtPick(div, q.id, o.val));
+      optsDiv.appendChild(div);
+    });
+    body.appendChild(optsDiv);
+  } else {
+    const savedVal = bvtAnswers[q.id] || '';
+    body.innerHTML = `
+      <textarea class="bvt-text-input" id="bvtTextInput" placeholder="${q.placeholder}" rows="2">${savedVal}</textarea>
+      <div style="font-size:11px;color:var(--muted);margin-top:-20px;margin-bottom:24px;">${q.hint}</div>`;
+    const ta = document.getElementById('bvtTextInput');
+    ta.addEventListener('input', ()=>{
+      bvtAnswers[q.id] = ta.value.trim();
+      nextBtn.disabled = !ta.value.trim();
+    });
+    nextBtn.disabled = !savedVal;
+  }
+}
+
+function bvtPick(el, qid, val){
+  document.querySelectorAll('.bvt-opt').forEach(o=>o.classList.remove('chosen'));
+  el.classList.add('chosen');
+  bvtAnswers[qid] = val;
+  document.getElementById('bvtNextBtn').disabled = false;
+}
+
+function bvtNext(){
+  const q = BVT_QUESTIONS[bvtCurrent];
+  if(q.type==='text'){
+    const ta = document.getElementById('bvtTextInput');
+    bvtAnswers[q.id] = ta.value.trim();
+  }
+  if(bvtCurrent < BVT_QUESTIONS.length-1){
+    bvtCurrent++;
+    renderBVTQuestion();
+  } else {
+    completeBVT();
+  }
+}
+
+function bvtPrev(){
+  if(bvtCurrent > 0){ bvtCurrent--; renderBVTQuestion(); }
+}
+
+function completeBVT(){
+  saveBrandVoice(bvtAnswers);
+  document.getElementById('bvtWrap').classList.add('gone');
+  document.getElementById('voiceBadge').classList.add('on');
+}
+
+function skipBVT(){
+  document.getElementById('bvtWrap').classList.add('gone');
+}
+
+function retrain(){
+  closeSettings();
+  localStorage.removeItem(BVT_KEY);
+  startBVT();
+}
+
+function openSettings(){
+  const voice = getBrandVoice();
+  const panel = document.getElementById('settingsPanel');
+  const summary = document.getElementById('voiceSummary');
+  if(voice){
+    summary.innerHTML = `
+      <strong>Personality:</strong> ${voice.personality||'Not set'}<br>
+      <strong>Avoid:</strong> ${voice.avoid||'Not set'}<br>
+      <strong>Audience:</strong> ${voice.audience||'Not set'}<br>
+      <strong>Known for:</strong> ${voice.reputation||'Not set'}<br>
+      <strong>Humor:</strong> ${voice.humor||'Not set'}<br>
+      <strong>Brand words:</strong> ${voice.threewords||'Not set'}<br>
+      <strong>Biggest flex:</strong> ${voice.flex||'Not set'}<br>
+      <strong>Dream customer:</strong> ${voice.dreamcustomer||'Not set'}<br>
+      <strong>Posts make people feel:</strong> ${voice.feeling||'Not set'}
+    `;
+  } else {
+    summary.innerHTML = '<span style="color:var(--muted)">No brand voice set up yet.</span>';
+  }
+  panel.classList.remove('gone');
+}
+
+function closeSettings(){ document.getElementById('settingsPanel').classList.add('gone'); }
+
+function buildVoicePrompt(){
+  const v = getBrandVoice();
+  if(!v) return '';
+  return `
+BRAND VOICE PROFILE (follow this precisely):
+- Communication personality: ${v.personality||'natural and authentic'}
+- Never sound: ${v.avoid||'generic'}
+- Target audience: ${v.audience||'local community'}
+- Brand reputation/promise: ${v.reputation||'quality service'}
+- Humor level: ${v.humor||'occasional light humor'}
+- Local feel: ${v.local||'community rooted'}
+- Brand identity words: ${v.threewords||''}
+- Biggest differentiator: ${v.flex||'quality'}
+- Dream customer: ${v.dreamcustomer||'local community members'}
+- Emotional goal of every post: ${v.feeling||'inspired'}
+
+Write as if you ARE this brand. Every word should reflect this voice profile.`;
+}
 
 // ══════════ APP STATE ══════════
 let state = {
@@ -1030,7 +1489,9 @@ async function generate(){
     ? 'Subtly position this business as the clear best choice in the local area — without naming competitors. Use confident language that implies they are the go-to option.'
     : '';
 
-  const prompt = `You're a social media expert who writes content for local businesses. You write like a real human — not corporate, not stiff. You understand what actually stops people from scrolling.
+  const voiceProfile = buildVoicePrompt();
+
+  const prompt = `You are a social media expert who writes content for local businesses. You write like a real human — not corporate, not stiff. You understand what actually stops people from scrolling.
 
 Business: ${state.bizName}
 Type of business: ${state.industry}
@@ -1039,6 +1500,8 @@ Tone: Write in a ${state.vibe} tone
 Platform: ${platformText}
 
 Write exactly ${state.count} social media posts. Make each one completely different — different hook, different angle, different structure. 
+
+${voiceProfile}
 
 Guidelines:
 - Open with something that makes you stop scrolling. No "Are you looking for..." or "Introducing..." or any cliché opener.
@@ -1200,7 +1663,7 @@ async function regenOne(btn, idx){
   btn.textContent='Rewriting...';
   btn.disabled=true;
 
-  const prompt = `You're a social media copywriter. Write ONE fresh social media post for ${state.bizName}, a ${state.industry} business. Tone: ${state.vibe}. Platform: ${state.platform}. ${state.promo ? 'Focus: '+state.promo : ''} Make it completely different from anything typical. Sound human, not corporate. No cliché openers. Short punchy sentences. ${state.hashtags ? 'Add 5 hashtags at the end.' : 'No hashtags.'} Return just the post text, nothing else.`;
+  const prompt = `You are a social media copywriter. Write ONE fresh social media post for ${state.bizName}, a ${state.industry} business. Tone: ${state.vibe}. Platform: ${state.platform}. ${state.promo ? 'Focus: '+state.promo : ''} Make it completely different from anything typical. Sound human, not corporate. No cliché openers. Short punchy sentences. ${state.hashtags ? 'Add 5 hashtags at the end.' : 'No hashtags.'} Return just the post text, nothing else.`;
 
   try {
     const res = await fetch('https://rubywallapi.gideonmoffitt08.workers.dev',{
@@ -1265,6 +1728,7 @@ function copyAll(){
 
 function startOver(){
   state = {industry:'',vibe:'',bizName:'',promo:'',platform:'instagram',count:5,hashtags:true,calendar:false,length:'short',competitor:false};
+  // Keep brand voice across sessions
   document.querySelectorAll('.qcard').forEach(c=>c.classList.remove('picked'));
   document.getElementById('bizName').value='';
   document.getElementById('bizPromo').value='';

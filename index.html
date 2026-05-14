@@ -7,380 +7,327 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #0c0c0f;
-      --surface: #141418;
-      --surface2: #1a1a20;
-      --border: rgba(255,255,255,0.06);
-      --red: #e11d48;
-      --red-dark: #9f1239;
-      --red-glow: rgba(225,29,72,0.15);
-      --text: #f0f0f0;
-      --muted: #666;
-      --sub: #444;
+      --bg: #0c0c0f; --surface: #141418; --surface2: #1a1a20;
+      --border: rgba(255,255,255,0.06); --red: #e11d48; --red-dark: #9f1239;
+      --red-glow: rgba(225,29,72,0.12); --text: #f0f0f0; --muted: #666; --sub: #444;
     }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* Animated background */
-    body::before {
-      content: '';
-      position: fixed;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(ellipse at 20% 20%, rgba(225,29,72,0.04) 0%, transparent 50%),
-                  radial-gradient(ellipse at 80% 80%, rgba(225,29,72,0.03) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── Scrollbar ── */
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    body::before { content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(ellipse at 20% 20%, rgba(225,29,72,0.04) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(225,29,72,0.03) 0%, transparent 50%); pointer-events: none; z-index: 0; }
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
 
-    /* ── Header ── */
-    #header {
-      position: relative; z-index: 10;
-      padding: 16px 24px;
-      display: flex; align-items: center; gap: 12px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(12,12,15,0.95);
-      backdrop-filter: blur(10px);
+    /* ── LOGIN SCREEN ── */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; background: var(--bg);
     }
-    #logo {
-      width: 36px; height: 36px; border-radius: 10px;
+    #login-screen.hidden { display: none; }
+    .login-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; padding: 48px 40px; max-width: 420px; width: 100%;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    }
+    .login-logo {
+      width: 56px; height: 56px; border-radius: 16px;
       background: linear-gradient(135deg, var(--red), var(--red-dark));
       display: flex; align-items: center; justify-content: center;
-      font-size: 17px; flex-shrink: 0;
-      box-shadow: 0 0 20px rgba(225,29,72,0.3);
+      font-size: 24px; margin-bottom: 24px;
+      box-shadow: 0 0 40px rgba(225,29,72,0.3);
     }
-    #header-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: -0.02em; }
-    #header-sub { color: var(--muted); font-size: 11px; }
-    #profile-btn {
-      margin-left: auto;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 7px 14px;
-      color: var(--muted); font-size: 12px; font-weight: 600;
-      cursor: pointer; font-family: 'DM Sans', sans-serif;
-      transition: all 0.2s;
+    .login-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .login-title span { color: var(--red); }
+    .login-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
+    .login-field { margin-bottom: 16px; }
+    .login-field label { display: block; color: #888; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+    .login-input {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 13px 16px; color: var(--text); font-size: 15px;
+      font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s;
     }
-    #profile-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+    .login-input:focus { border-color: rgba(225,29,72,0.4); }
+    .login-btn {
+      width: 100%; background: linear-gradient(135deg, var(--red), var(--red-dark));
+      border: none; border-radius: 10px; padding: 14px 0; color: #fff;
+      font-weight: 700; font-size: 15px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; margin-top: 8px;
+      box-shadow: 0 4px 20px rgba(225,29,72,0.3); transition: opacity 0.2s;
+    }
+    .login-btn:hover { opacity: 0.9; }
+    .login-error {
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px; padding: 10px 14px; color: #fca5a5;
+      font-size: 13px; margin-top: 12px; display: none;
+    }
+    .login-error.show { display: block; }
+    .login-footer { color: var(--sub); font-size: 12px; text-align: center; margin-top: 20px; }
 
-    /* ── Onboarding Overlay ── */
-    #onboarding {
-      position: fixed; inset: 0; z-index: 50;
-      background: rgba(12,12,15,0.97);
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px;
+    /* ── EXPIRED SCREEN ── */
+    #expired-screen {
+      position: fixed; inset: 0; z-index: 100;
+      display: none; align-items: center; justify-content: center;
+      padding: 24px; background: var(--bg);
     }
-    #onboarding.hidden { display: none; }
-    #onboarding-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px; padding: 40px 36px;
-      max-width: 480px; width: 100%;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+    #expired-screen.show { display: flex; }
+    .expired-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; padding: 48px 40px; max-width: 420px; width: 100%; text-align: center;
     }
-    #ob-logo {
-      width: 48px; height: 48px; border-radius: 14px;
+    .expired-icon { font-size: 48px; margin-bottom: 20px; }
+    .expired-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; margin-bottom: 10px; }
+    .expired-sub { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+    .expired-contact {
+      background: var(--red-glow); border: 1px solid rgba(225,29,72,0.2);
+      border-radius: 10px; padding: 14px 16px; color: #aaa; font-size: 13px;
+    }
+    .expired-contact strong { color: var(--red); }
+
+    /* ── ADMIN PANEL ── */
+    #admin-panel {
+      position: fixed; inset: 0; z-index: 90;
+      display: none; flex-direction: column;
+      background: var(--bg);
+    }
+    #admin-panel.show { display: flex; }
+    .admin-header {
+      padding: 16px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(12,12,15,0.95);
+    }
+    .admin-logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--red), var(--red-dark)); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+    .admin-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; }
+    .admin-badge { background: rgba(225,29,72,0.15); border: 1px solid rgba(225,29,72,0.3); border-radius: 6px; padding: 3px 10px; color: var(--red); font-size: 11px; font-weight: 700; }
+    .admin-logout { margin-left: auto; background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; color: var(--muted); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .admin-body { flex: 1; overflow-y: auto; padding: 28px 24px; max-width: 700px; width: 100%; margin: 0 auto; }
+    .admin-section { margin-bottom: 36px; }
+    .admin-section h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 6px; }
+    .admin-section p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+    .gen-row { display: flex; gap: 10px; margin-bottom: 12px; }
+    .tier-select {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 11px 14px; color: var(--text);
+      font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none;
+    }
+    .tier-select option { background: var(--surface2); }
+    .gen-btn {
       background: linear-gradient(135deg, var(--red), var(--red-dark));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; margin-bottom: 20px;
-      box-shadow: 0 0 30px rgba(225,29,72,0.3);
+      border: none; border-radius: 10px; padding: 11px 20px;
+      color: #fff; font-weight: 700; font-size: 13px;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      white-space: nowrap;
     }
-    #ob-title {
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: 24px; letter-spacing: -0.03em; margin-bottom: 6px;
+    .code-result {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px; display: none;
+      align-items: center; gap: 12px; margin-bottom: 20px;
     }
+    .code-result.show { display: flex; }
+    .code-val { font-family: monospace; font-size: 15px; color: var(--red); font-weight: 700; flex: 1; }
+    .code-meta { color: var(--muted); font-size: 12px; }
+    .copy-code-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 14px; color: var(--text);
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; white-space: nowrap;
+    }
+    .codes-list { display: flex; flex-direction: column; gap: 8px; }
+    .code-item {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .code-item-val { font-family: monospace; font-size: 13px; color: #aaa; flex: 1; }
+    .code-tier { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 5px; }
+    .code-tier.paid { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+    .code-tier.trial { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
+    .code-expiry { color: var(--muted); font-size: 12px; }
+    .code-expired-tag { color: #f87171; font-size: 11px; font-weight: 700; }
+    .delete-code-btn { background: transparent; border: none; color: var(--sub); font-size: 16px; cursor: pointer; padding: 2px 6px; }
+    .delete-code-btn:hover { color: #f87171; }
+    .no-codes { color: var(--sub); font-size: 13px; text-align: center; padding: 20px; }
+    .admin-enter-btn {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 13px 0; color: var(--text);
+      font-weight: 600; font-size: 14px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .admin-enter-btn:hover { border-color: rgba(225,29,72,0.3); }
+
+    /* ── ONBOARDING ── */
+    #onboarding { position: fixed; inset: 0; z-index: 50; background: rgba(12,12,15,0.97); display: flex; align-items: center; justify-content: center; padding: 24px; }
+    #onboarding.hidden { display: none; }
+    #onboarding-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px 36px; max-width: 480px; width: 100%; box-shadow: 0 40px 80px rgba(0,0,0,0.5); }
+    #ob-logo { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--red), var(--red-dark)); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; box-shadow: 0 0 30px rgba(225,29,72,0.3); }
+    #ob-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.03em; margin-bottom: 6px; }
     #ob-title span { color: var(--red); }
     #ob-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
-
     .ob-step { display: none; }
     .ob-step.active { display: block; }
-
-    .ob-question {
-      color: var(--text); font-size: 15px; font-weight: 600;
-      margin-bottom: 14px; font-family: 'Syne', sans-serif;
-    }
+    .ob-question { color: var(--text); font-size: 15px; font-weight: 600; margin-bottom: 14px; font-family: 'Syne', sans-serif; }
     .ob-question span { color: var(--red); }
-
-    .ob-input {
-      width: 100%; background: var(--surface2);
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 12px 16px; color: var(--text); font-size: 15px;
-      font-family: 'DM Sans', sans-serif; outline: none;
-      transition: border-color 0.2s; margin-bottom: 16px;
-    }
+    .ob-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text); font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; margin-bottom: 16px; }
     .ob-input:focus { border-color: rgba(225,29,72,0.4); }
-
     .ob-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-    .ob-option {
-      padding: 12px 16px; border-radius: 10px; cursor: pointer;
-      border: 1px solid var(--border); background: var(--surface2);
-      color: #aaa; font-size: 14px; font-weight: 500;
-      transition: all 0.15s; text-align: left; font-family: 'DM Sans', sans-serif;
-    }
+    .ob-option { padding: 12px 16px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: #aaa; font-size: 14px; font-weight: 500; transition: all 0.15s; text-align: left; font-family: 'DM Sans', sans-serif; }
     .ob-option:hover { border-color: rgba(225,29,72,0.3); color: var(--text); }
-    .ob-option.selected {
-      border-color: var(--red); background: var(--red-glow);
-      color: var(--text);
-    }
-
+    .ob-option.selected { border-color: var(--red); background: var(--red-glow); color: var(--text); }
     .ob-row { display: flex; gap: 10px; align-items: center; }
-    #ob-back {
-      background: transparent; border: 1px solid var(--border);
-      border-radius: 10px; padding: 12px 20px;
-      color: var(--muted); font-size: 14px; font-weight: 600;
-      cursor: pointer; font-family: 'DM Sans', sans-serif;
-      transition: all 0.2s;
-    }
-    #ob-back:hover { color: var(--text); }
-    #ob-next {
-      flex: 1; background: linear-gradient(135deg, var(--red), var(--red-dark));
-      border: none; border-radius: 10px; padding: 13px 0;
-      color: #fff; font-size: 14px; font-weight: 700;
-      cursor: pointer; font-family: 'DM Sans', sans-serif;
-      transition: opacity 0.2s; box-shadow: 0 4px 20px rgba(225,29,72,0.3);
-    }
-    #ob-next:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .ob-progress {
-      display: flex; gap: 6px; margin-bottom: 28px;
-    }
-    .ob-dot {
-      height: 3px; flex: 1; border-radius: 2px;
-      background: var(--border); transition: background 0.3s;
-    }
+    #ob-back { background: transparent; border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    #ob-next { flex: 1; background: linear-gradient(135deg, var(--red), var(--red-dark)); border: none; border-radius: 10px; padding: 13px 0; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; box-shadow: 0 4px 20px rgba(225,29,72,0.3); }
+    .ob-progress { display: flex; gap: 6px; margin-bottom: 28px; }
+    .ob-dot { height: 3px; flex: 1; border-radius: 2px; background: var(--border); transition: background 0.3s; }
     .ob-dot.done { background: var(--red); }
 
-    /* ── Main Chat Area ── */
-    #app {
-      position: relative; z-index: 1;
-      flex: 1; display: flex; flex-direction: column;
-      height: calc(100vh - 69px);
-    }
+    /* ── HEADER ── */
+    #header { position: relative; z-index: 10; padding: 16px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); background: rgba(12,12,15,0.95); backdrop-filter: blur(10px); }
+    #logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--red), var(--red-dark)); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; box-shadow: 0 0 20px rgba(225,29,72,0.3); }
+    #header-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: -0.02em; }
+    #header-sub { color: var(--muted); font-size: 11px; }
+    #header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    #trial-counter { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25); border-radius: 20px; padding: 5px 12px; color: #fbbf24; font-size: 12px; font-weight: 600; display: none; }
+    #profile-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    #logout-btn { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; color: var(--muted); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 
-    /* Quick start prompts */
-    #quick-starts {
-      padding: 20px 24px 0;
-      display: flex; gap: 8px; flex-wrap: wrap;
-    }
-    .qs-btn {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px; padding: 8px 16px;
-      color: #888; font-size: 13px; font-weight: 500;
-      cursor: pointer; font-family: 'DM Sans', sans-serif;
-      transition: all 0.2s; white-space: nowrap;
-    }
-    .qs-btn:hover {
-      border-color: rgba(225,29,72,0.3);
-      color: var(--text); background: var(--red-glow);
-    }
-
-    /* Messages */
-    #messages {
-      flex: 1; overflow-y: auto;
-      padding: 20px 24px; display: flex;
-      flex-direction: column; gap: 16px;
-    }
-
+    /* ── APP ── */
+    #app { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; height: calc(100vh - 69px); }
+    #quick-starts { padding: 16px 24px 0; display: flex; gap: 8px; flex-wrap: wrap; }
+    .qs-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; color: #888; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap; }
+    .qs-btn:hover { border-color: rgba(225,29,72,0.3); color: var(--text); background: var(--red-glow); }
+    #messages { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
     .msg-row { display: flex; gap: 10px; max-width: 780px; }
     .msg-row.user { margin-left: auto; flex-direction: row-reverse; }
-
-    .msg-icon {
-      width: 32px; height: 32px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; flex-shrink: 0; margin-top: 2px;
-    }
-    .msg-icon.advisor {
-      background: linear-gradient(135deg, var(--red), var(--red-dark));
-      box-shadow: 0 0 12px rgba(225,29,72,0.25);
-    }
-    .msg-icon.user-icon {
-      background: var(--surface2); border: 1px solid var(--border);
-      color: #888;
-    }
-
-    .msg-bubble {
-      padding: 12px 16px; border-radius: 14px;
-      font-size: 14px; line-height: 1.65; max-width: calc(100% - 42px);
-    }
-    .msg-bubble.advisor {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px 14px 14px 14px;
-      color: var(--text);
-    }
-    .msg-bubble.user {
-      background: linear-gradient(135deg, var(--red), var(--red-dark));
-      border-radius: 14px 4px 14px 14px;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(225,29,72,0.25);
-    }
-
-    /* Typing indicator */
-    #typing {
-      display: none;
-      align-items: center; gap: 10px;
-      max-width: 780px;
-    }
+    .msg-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+    .msg-icon.advisor { background: linear-gradient(135deg, var(--red), var(--red-dark)); box-shadow: 0 0 12px rgba(225,29,72,0.25); }
+    .msg-icon.user-icon { background: var(--surface2); border: 1px solid var(--border); color: #888; }
+    .msg-bubble { padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.65; max-width: calc(100% - 42px); }
+    .msg-bubble.advisor { background: var(--surface); border: 1px solid var(--border); border-radius: 4px 14px 14px 14px; color: var(--text); }
+    .msg-bubble.user { background: linear-gradient(135deg, var(--red), var(--red-dark)); border-radius: 14px 4px 14px 14px; color: #fff; box-shadow: 0 4px 16px rgba(225,29,72,0.25); }
+    #typing { display: none; align-items: center; gap: 10px; max-width: 780px; padding: 0 24px; }
     #typing.show { display: flex; }
-    .typing-bubble {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 4px 14px 14px 14px;
-      padding: 14px 18px; display: flex; gap: 5px; align-items: center;
-    }
-    .t-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--red); opacity: 0.4;
-      animation: tdot 1.2s infinite ease-in-out;
-    }
+    .typing-bubble { background: var(--surface); border: 1px solid var(--border); border-radius: 4px 14px 14px 14px; padding: 14px 18px; display: flex; gap: 5px; align-items: center; }
+    .t-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); opacity: 0.4; animation: tdot 1.2s infinite ease-in-out; }
     .t-dot:nth-child(2) { animation-delay: 0.2s; }
     .t-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes tdot {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
-      30% { transform: translateY(-5px); opacity: 1; }
-    }
-
-    /* Context bar */
-    #context-bar {
-      display: none;
-      margin: 0 24px 12px;
-      background: var(--red-glow); border: 1px solid rgba(225,29,72,0.2);
-      border-radius: 10px; padding: 10px 14px;
-      font-size: 12px; color: #aaa;
-      align-items: center; gap: 8px;
-    }
+    @keyframes tdot { 0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-5px);opacity:1} }
+    #context-bar { display: none; margin: 12px 24px 0; background: var(--red-glow); border: 1px solid rgba(225,29,72,0.2); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #aaa; align-items: center; gap: 8px; }
     #context-bar.show { display: flex; }
     #context-bar span { color: var(--red); font-weight: 600; }
-
-    /* Input area */
-    #input-area {
-      padding: 16px 24px 20px;
-      border-top: 1px solid var(--border);
-      background: rgba(12,12,15,0.95);
-      backdrop-filter: blur(10px);
-    }
-    #input-row {
-      display: flex; gap: 10px; align-items: flex-end;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 10px 10px 10px 16px;
-      transition: border-color 0.2s;
-    }
-    #input-row:focus-within { border-color: rgba(225,29,72,0.3); }
-    #msg-input {
-      flex: 1; background: transparent; border: none; outline: none;
-      color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif;
-      resize: none; max-height: 120px; line-height: 1.5;
-    }
-    #msg-input::placeholder { color: var(--sub); }
-    #send-btn {
-      width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--red), var(--red-dark));
-      border: none; cursor: pointer; font-size: 15px; color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s; box-shadow: 0 2px 10px rgba(225,29,72,0.3);
-    }
-    #send-btn:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; }
-    #input-hint { color: var(--sub); font-size: 11px; margin-top: 8px; text-align: center; }
-
-    /* Empty state */
-    #empty-state {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; padding: 40px 24px;
-    }
+    #empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px; }
     #empty-state.hidden { display: none; }
-    .es-icon {
-      width: 64px; height: 64px; border-radius: 18px;
-      background: linear-gradient(135deg, var(--red), var(--red-dark));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px; margin: 0 auto 20px;
-      box-shadow: 0 0 40px rgba(225,29,72,0.2);
-    }
-    .es-title {
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: 22px; letter-spacing: -0.02em; margin-bottom: 8px;
-    }
+    .es-icon { width: 64px; height: 64px; border-radius: 18px; background: linear-gradient(135deg, var(--red), var(--red-dark)); display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px; box-shadow: 0 0 40px rgba(225,29,72,0.2); }
+    .es-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; margin-bottom: 8px; }
     .es-title span { color: var(--red); }
     .es-sub { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 320px; }
+    #input-area { padding: 16px 24px 20px; border-top: 1px solid var(--border); background: rgba(12,12,15,0.95); backdrop-filter: blur(10px); }
+    #input-row { display: flex; gap: 10px; align-items: flex-end; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 10px 10px 16px; transition: border-color 0.2s; }
+    #input-row:focus-within { border-color: rgba(225,29,72,0.3); }
+    #msg-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif; resize: none; max-height: 120px; line-height: 1.5; }
+    #msg-input::placeholder { color: var(--sub); }
+    #send-btn { width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0; background: linear-gradient(135deg, var(--red), var(--red-dark)); border: none; cursor: pointer; font-size: 15px; color: #fff; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 10px rgba(225,29,72,0.3); }
+    #send-btn:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; }
+    #input-hint { color: var(--sub); font-size: 11px; margin-top: 8px; text-align: center; }
+    #trial-limit-msg { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 12px 16px; color: #fbbf24; font-size: 13px; margin-bottom: 10px; display: none; text-align: center; }
 
     /* Profile modal */
-    #profile-modal {
-      position: fixed; inset: 0; z-index: 40;
-      background: rgba(12,12,15,0.9);
-      display: none; align-items: center; justify-content: center;
-      padding: 24px;
-    }
+    #profile-modal { position: fixed; inset: 0; z-index: 40; background: rgba(12,12,15,0.9); display: none; align-items: center; justify-content: center; padding: 24px; }
     #profile-modal.show { display: flex; }
-    #profile-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px; padding: 32px; max-width: 420px; width: 100%;
-    }
-    #profile-card h3 {
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: 18px; margin-bottom: 6px;
-    }
+    #profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 420px; width: 100%; }
+    #profile-card h3 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; margin-bottom: 6px; }
     #profile-card p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
     .profile-field { margin-bottom: 16px; }
-    .profile-field label {
-      display: block; color: #888; font-size: 11px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px;
-    }
-    .profile-field input, .profile-field select {
-      width: 100%; background: var(--surface2);
-      border: 1px solid var(--border); border-radius: 8px;
-      padding: 10px 12px; color: var(--text); font-size: 14px;
-      font-family: 'DM Sans', sans-serif; outline: none;
-    }
+    .profile-field label { display: block; color: #888; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+    .profile-field input, .profile-field select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; }
     .profile-field select option { background: var(--surface2); }
-    #profile-save {
-      width: 100%; background: linear-gradient(135deg, var(--red), var(--red-dark));
-      border: none; border-radius: 10px; padding: 12px 0;
-      color: #fff; font-weight: 700; font-size: 14px;
-      cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px;
-    }
-    #profile-close {
-      width: 100%; background: transparent; border: 1px solid var(--border);
-      border-radius: 10px; padding: 11px 0; color: var(--muted);
-      font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px;
-    }
+    #profile-save { width: 100%; background: linear-gradient(135deg, var(--red), var(--red-dark)); border: none; border-radius: 10px; padding: 12px 0; color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px; }
+    #profile-close { width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 10px; padding: 11px 0; color: var(--muted); font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px; }
   </style>
 </head>
 <body>
 
-<!-- Onboarding -->
-<div id="onboarding">
+<!-- ── LOGIN SCREEN ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">💎</div>
+    <div class="login-title">Ruby Wall <span>Advisor</span></div>
+    <div class="login-sub">Enter your access code or admin password to continue.</div>
+    <div class="login-field">
+      <label>Password or Invite Code</label>
+      <input class="login-input" id="login-input" type="password" placeholder="Enter your code..." onkeydown="if(event.key==='Enter')doLogin()" />
+    </div>
+    <button class="login-btn" onclick="doLogin()">Access Advisor →</button>
+    <div class="login-error" id="login-error">Invalid code or password. Please try again.</div>
+    <div class="login-footer">Don't have a code? Contact Ruby Wall to get access.</div>
+  </div>
+</div>
+
+<!-- ── EXPIRED SCREEN ── -->
+<div id="expired-screen">
+  <div class="expired-card">
+    <div class="expired-icon">⏰</div>
+    <div class="expired-title">Access Expired</div>
+    <div class="expired-sub">Your invite code has expired. Reach out to Ruby Wall to renew your access or upgrade to a paid plan.</div>
+    <div class="expired-contact">Contact <strong>Ruby Wall</strong> to get a new invite code and continue growing your business.</div>
+  </div>
+</div>
+
+<!-- ── ADMIN PANEL ── -->
+<div id="admin-panel">
+  <div class="admin-header">
+    <div class="admin-logo">💎</div>
+    <div>
+      <div class="admin-title">Ruby Wall Advisor</div>
+    </div>
+    <div class="admin-badge">ADMIN</div>
+    <button class="admin-logout" onclick="doLogout()">Log Out</button>
+  </div>
+  <div class="admin-body">
+    <div class="admin-section">
+      <h3>Generate Invite Code</h3>
+      <p>Create a new code for a client. Codes expire 30 days from generation.</p>
+      <div class="gen-row">
+        <select class="tier-select" id="tier-select">
+          <option value="paid">💳 Paid Client — Full Access</option>
+          <option value="trial">🔓 Free Trial — 10 Messages</option>
+        </select>
+        <button class="gen-btn" onclick="generateCode()">Generate</button>
+      </div>
+      <div class="code-result" id="code-result">
+        <div>
+          <div class="code-val" id="gen-code-val"></div>
+          <div class="code-meta" id="gen-code-meta"></div>
+        </div>
+        <button class="copy-code-btn" onclick="copyGenCode()">Copy</button>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <h3>Active Codes</h3>
+      <p>All generated invite codes and their status.</p>
+      <div class="codes-list" id="codes-list"></div>
+    </div>
+
+    <div class="admin-section">
+      <button class="admin-enter-btn" onclick="enterAdvisor()">→ Enter Business Advisor</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ONBOARDING ── -->
+<div id="onboarding" class="hidden">
   <div id="onboarding-card">
     <div id="ob-logo">💎</div>
     <div id="ob-title">Ruby Wall <span>Advisor</span></div>
     <div id="ob-sub">Your personal AI business consultant. Answer 3 quick questions so I can give you advice that actually fits your situation.</div>
-
     <div class="ob-progress">
       <div class="ob-dot done" id="dot-0"></div>
       <div class="ob-dot" id="dot-1"></div>
       <div class="ob-dot" id="dot-2"></div>
     </div>
-
-    <!-- Step 1 -->
     <div class="ob-step active" id="step-0">
       <div class="ob-question"><span>01 /</span> What type of business do you have?</div>
       <input class="ob-input" id="biz-type-input" placeholder="e.g. Auto Repair Shop, Hair Salon, Landscaping..." />
     </div>
-
-    <!-- Step 2 -->
     <div class="ob-step" id="step-1">
       <div class="ob-question"><span>02 /</span> What's your biggest goal right now?</div>
       <div class="ob-options">
@@ -390,8 +337,6 @@
         <button class="ob-option" data-val="Set up and launch my business">🚀 Set up and launch my business</button>
       </div>
     </div>
-
-    <!-- Step 3 -->
     <div class="ob-step" id="step-2">
       <div class="ob-question"><span>03 /</span> How long have you been in business?</div>
       <div class="ob-options">
@@ -401,7 +346,6 @@
         <button class="ob-option" data-val="3+ years">🏆 3+ years</button>
       </div>
     </div>
-
     <div class="ob-row">
       <button id="ob-back" style="display:none" onclick="obBack()">← Back</button>
       <button id="ob-next" onclick="obNext()">Continue →</button>
@@ -409,17 +353,13 @@
   </div>
 </div>
 
-<!-- Profile Modal -->
+<!-- ── PROFILE MODAL ── -->
 <div id="profile-modal">
   <div id="profile-card">
     <h3>Update Your Profile</h3>
     <p>Change your business info to get better advice.</p>
-    <div class="profile-field">
-      <label>Business Type</label>
-      <input id="p-biz-type" placeholder="e.g. Auto Repair Shop" />
-    </div>
-    <div class="profile-field">
-      <label>Biggest Goal</label>
+    <div class="profile-field"><label>Business Type</label><input id="p-biz-type" placeholder="e.g. Auto Repair Shop" /></div>
+    <div class="profile-field"><label>Biggest Goal</label>
       <select id="p-goal">
         <option value="Get more customers">🎯 Get more customers</option>
         <option value="Grow my online presence">📱 Grow my online presence</option>
@@ -427,8 +367,7 @@
         <option value="Set up and launch my business">🚀 Set up and launch my business</option>
       </select>
     </div>
-    <div class="profile-field">
-      <label>Time in Business</label>
+    <div class="profile-field"><label>Time in Business</label>
       <select id="p-time">
         <option value="Just starting out">🌱 Just starting out</option>
         <option value="Less than 1 year">📅 Less than 1 year</option>
@@ -441,19 +380,19 @@
   </div>
 </div>
 
-<!-- Header -->
-<div id="header">
+<!-- ── HEADER ── -->
+<div id="header" style="display:none">
   <div id="logo">💎</div>
-  <div>
-    <div id="header-name">Ruby Wall Advisor</div>
-    <div id="header-sub">AI Business Consultant · Pillar 4</div>
+  <div><div id="header-name">Ruby Wall Advisor</div><div id="header-sub">AI Business Consultant · Pillar 4</div></div>
+  <div id="header-right">
+    <div id="trial-counter"></div>
+    <button id="profile-btn" onclick="openProfile()">✏️ Profile</button>
+    <button id="logout-btn" onclick="doLogout()">Log Out</button>
   </div>
-  <button id="profile-btn" onclick="openProfile()">✏️ My Profile</button>
 </div>
 
-<!-- App -->
-<div id="app">
-  <!-- Quick starts -->
+<!-- ── APP ── -->
+<div id="app" style="display:none">
   <div id="quick-starts">
     <button class="qs-btn" onclick="quickStart(this)">📈 How do I get more customers?</button>
     <button class="qs-btn" onclick="quickStart(this)">🌐 Do I need a website?</button>
@@ -461,37 +400,18 @@
     <button class="qs-btn" onclick="quickStart(this)">💰 How do I price my services?</button>
     <button class="qs-btn" onclick="quickStart(this)">🚀 Help me set up my business</button>
   </div>
-
-  <!-- Context bar -->
-  <div id="context-bar">
-    💼 Advising: <span id="ctx-biz"></span> · Goal: <span id="ctx-goal"></span>
-  </div>
-
-  <!-- Empty state -->
+  <div id="context-bar">💼 Advising: <span id="ctx-biz"></span> · Goal: <span id="ctx-goal"></span></div>
   <div id="empty-state">
     <div class="es-icon">🧠</div>
     <div class="es-title">Your <span>Business Advisor</span> is ready</div>
-    <div class="es-sub">Ask me anything — marketing, pricing, growth, setup. I'm built specifically to help local businesses like yours win.</div>
+    <div class="es-sub">Ask me anything — marketing, pricing, growth, setup. Built specifically to help local businesses like yours win.</div>
   </div>
-
-  <!-- Messages -->
-  <div id="messages" style="display:none"></div>
-
-  <!-- Typing -->
-  <div id="typing">
-    <div class="msg-icon advisor">💎</div>
-    <div class="typing-bubble">
-      <div class="t-dot"></div>
-      <div class="t-dot"></div>
-      <div class="t-dot"></div>
-    </div>
-  </div>
-
-  <!-- Input -->
+  <div id="messages" style="display:none;flex-direction:column;gap:16px"></div>
+  <div id="typing"><div class="msg-icon advisor">💎</div><div class="typing-bubble"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div></div>
   <div id="input-area">
+    <div id="trial-limit-msg">You've used all 10 free trial messages. Contact Ruby Wall to upgrade for full access.</div>
     <div id="input-row">
-      <textarea id="msg-input" placeholder="Ask your business advisor anything..." rows="1"
-        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <textarea id="msg-input" placeholder="Ask your business advisor anything..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
       <button id="send-btn" onclick="sendMessage()">➤</button>
     </div>
     <div id="input-hint">Powered by Ruby Wall AI · Your conversations are private</div>
@@ -500,23 +420,191 @@
 
 <script>
 const PROXY = 'https://rubywallapi.gideonmoffitt08.workers.dev/chat';
+const ADMIN_PASS = 'Einstein_Apollo';
+const TRIAL_LIMIT = 10;
 
 let profile = { bizType: '', goal: '', time: '' };
 let messages = [];
 let obStep = 0;
 let obData = { bizType: '', goal: '', time: '' };
 let loading = false;
+let currentTier = null; // 'admin' | 'paid' | 'trial'
+let trialMsgsUsed = 0;
 
-// ── Onboarding ────────────────────────────────────────────────────────
-function loadProfile() {
-  const saved = localStorage.getItem('rw-advisor-profile');
-  if (saved) {
-    profile = JSON.parse(saved);
-    document.getElementById('onboarding').classList.add('hidden');
-    showContextBar();
+// ── CODE UTILITIES ────────────────────────────────────────────────────
+function generateRandomCode(prefix) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = prefix + '-';
+  for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+function getCodesDB() {
+  return JSON.parse(localStorage.getItem('rw-codes') || '[]');
+}
+
+function saveCodesDB(codes) {
+  localStorage.setItem('rw-codes', JSON.stringify(codes));
+}
+
+function isCodeValid(code) {
+  if (code === ADMIN_PASS) return { valid: true, tier: 'admin' };
+  const codes = getCodesDB();
+  const entry = codes.find(c => c.code === code);
+  if (!entry) return { valid: false };
+  const now = Date.now();
+  if (now > entry.expiry) return { valid: false, expired: true };
+  return { valid: true, tier: entry.tier };
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────────────
+function doLogin() {
+  const val = document.getElementById('login-input').value.trim();
+  const result = isCodeValid(val);
+  if (!result.valid) {
+    if (result.expired) {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('expired-screen').classList.add('show');
+      return;
+    }
+    document.getElementById('login-error').classList.add('show');
+    return;
+  }
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('login-screen').classList.add('hidden');
+  currentTier = result.tier;
+  localStorage.setItem('rw-session', JSON.stringify({ tier: result.tier, code: val, ts: Date.now() }));
+
+  if (result.tier === 'admin') {
+    showAdminPanel();
+  } else {
+    startAdvisor();
   }
 }
 
+function doLogout() {
+  localStorage.removeItem('rw-session');
+  currentTier = null;
+  messages = [];
+  trialMsgsUsed = 0;
+  document.getElementById('login-input').value = '';
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('admin-panel').classList.remove('show');
+  document.getElementById('header').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+}
+
+function checkSession() {
+  const saved = localStorage.getItem('rw-session');
+  if (!saved) return;
+  const sess = JSON.parse(saved);
+  // Re-validate code
+  const result = isCodeValid(sess.code);
+  if (!result.valid) { localStorage.removeItem('rw-session'); return; }
+  currentTier = result.tier;
+  document.getElementById('login-screen').classList.add('hidden');
+  if (result.tier === 'admin') showAdminPanel();
+  else startAdvisor();
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────────────
+function showAdminPanel() {
+  document.getElementById('admin-panel').classList.add('show');
+  renderCodesList();
+}
+
+function generateCode() {
+  const tier = document.getElementById('tier-select').value;
+  const code = generateRandomCode(tier === 'paid' ? 'RWP' : 'RWT');
+  const expiry = Date.now() + (30 * 24 * 60 * 60 * 1000);
+  const codes = getCodesDB();
+  codes.push({ code, tier, expiry, created: Date.now() });
+  saveCodesDB(codes);
+
+  document.getElementById('gen-code-val').textContent = code;
+  document.getElementById('gen-code-meta').textContent =
+    `${tier === 'paid' ? 'Paid Client · Full Access' : 'Free Trial · 10 Messages'} · Expires ${new Date(expiry).toLocaleDateString()}`;
+  document.getElementById('code-result').classList.add('show');
+  renderCodesList();
+}
+
+let lastGenCode = '';
+function copyGenCode() {
+  const code = document.getElementById('gen-code-val').textContent;
+  navigator.clipboard.writeText(code);
+  const btn = document.querySelector('.copy-code-btn');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 2000);
+}
+
+function renderCodesList() {
+  const codes = getCodesDB();
+  const list = document.getElementById('codes-list');
+  if (codes.length === 0) {
+    list.innerHTML = '<div class="no-codes">No codes generated yet.</div>';
+    return;
+  }
+  const now = Date.now();
+  list.innerHTML = codes.map((c, i) => `
+    <div class="code-item">
+      <div class="code-item-val">${c.code}</div>
+      <div class="code-tier ${c.tier}">${c.tier === 'paid' ? 'PAID' : 'TRIAL'}</div>
+      ${now > c.expiry
+        ? `<div class="code-expired-tag">EXPIRED</div>`
+        : `<div class="code-expiry">Exp. ${new Date(c.expiry).toLocaleDateString()}</div>`
+      }
+      <button class="delete-code-btn" onclick="deleteCode(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function deleteCode(i) {
+  const codes = getCodesDB();
+  codes.splice(i, 1);
+  saveCodesDB(codes);
+  renderCodesList();
+}
+
+function enterAdvisor() {
+  document.getElementById('admin-panel').classList.remove('show');
+  startAdvisor();
+}
+
+// ── ADVISOR ───────────────────────────────────────────────────────────
+function startAdvisor() {
+  document.getElementById('header').style.display = 'flex';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('app').style.flexDirection = 'column';
+
+  if (currentTier === 'trial') {
+    trialMsgsUsed = parseInt(localStorage.getItem('rw-trial-used') || '0');
+    updateTrialCounter();
+  }
+
+  const savedProfile = localStorage.getItem('rw-advisor-profile');
+  if (savedProfile) {
+    profile = JSON.parse(savedProfile);
+    showContextBar();
+    sendWelcome();
+  } else {
+    document.getElementById('onboarding').classList.remove('hidden');
+  }
+}
+
+function updateTrialCounter() {
+  const counter = document.getElementById('trial-counter');
+  if (currentTier !== 'trial') { counter.style.display = 'none'; return; }
+  const remaining = TRIAL_LIMIT - trialMsgsUsed;
+  counter.style.display = 'block';
+  counter.textContent = `${remaining} messages left`;
+  if (remaining <= 0) {
+    document.getElementById('msg-input').disabled = true;
+    document.getElementById('send-btn').disabled = true;
+    document.getElementById('trial-limit-msg').style.display = 'block';
+  }
+}
+
+// ── ONBOARDING ────────────────────────────────────────────────────────
 function obNext() {
   if (obStep === 0) {
     const val = document.getElementById('biz-type-input').value.trim();
@@ -530,7 +618,6 @@ function obNext() {
     const sel = document.querySelector('#step-2 .ob-option.selected');
     if (!sel) return;
     obData.time = sel.dataset.val;
-    // Save and launch
     profile = { bizType: obData.bizType, goal: obData.goal, time: obData.time };
     localStorage.setItem('rw-advisor-profile', JSON.stringify(profile));
     document.getElementById('onboarding').classList.add('hidden');
@@ -542,7 +629,7 @@ function obNext() {
   document.querySelectorAll('.ob-step').forEach((s, i) => s.classList.toggle('active', i === obStep));
   document.querySelectorAll('.ob-dot').forEach((d, i) => d.classList.toggle('done', i <= obStep));
   document.getElementById('ob-back').style.display = obStep > 0 ? 'block' : 'none';
-  updateObNext();
+  document.getElementById('ob-next').textContent = obStep === 2 ? 'Get Started →' : 'Continue →';
 }
 
 function obBack() {
@@ -550,15 +637,9 @@ function obBack() {
   document.querySelectorAll('.ob-step').forEach((s, i) => s.classList.toggle('active', i === obStep));
   document.querySelectorAll('.ob-dot').forEach((d, i) => d.classList.toggle('done', i <= obStep));
   document.getElementById('ob-back').style.display = obStep > 0 ? 'block' : 'none';
-  updateObNext();
+  document.getElementById('ob-next').textContent = obStep === 2 ? 'Get Started →' : 'Continue →';
 }
 
-function updateObNext() {
-  const btn = document.getElementById('ob-next');
-  btn.textContent = obStep === 2 ? 'Get Started →' : 'Continue →';
-}
-
-// Option selection
 document.querySelectorAll('.ob-option').forEach(btn => {
   btn.addEventListener('click', () => {
     btn.closest('.ob-options').querySelectorAll('.ob-option').forEach(b => b.classList.remove('selected'));
@@ -566,14 +647,14 @@ document.querySelectorAll('.ob-option').forEach(btn => {
   });
 });
 
-// ── Context Bar ───────────────────────────────────────────────────────
+// ── CONTEXT BAR ───────────────────────────────────────────────────────
 function showContextBar() {
   document.getElementById('ctx-biz').textContent = profile.bizType;
   document.getElementById('ctx-goal').textContent = profile.goal;
   document.getElementById('context-bar').classList.add('show');
 }
 
-// ── System Prompt ─────────────────────────────────────────────────────
+// ── SYSTEM PROMPT ─────────────────────────────────────────────────────
 function buildSystemPrompt() {
   return `You are the Ruby Wall Business Advisor — an expert AI consultant specializing in helping small and local businesses grow, market themselves, and succeed.
 
@@ -582,7 +663,7 @@ You are advising a business owner with the following profile:
 - Current Goal: ${profile.goal}
 - Time in Business: ${profile.time}
 
-Your personality: Direct, practical, encouraging. You give real actionable advice — not generic tips. You speak like a trusted mentor who has helped hundreds of small businesses, not like a textbook.
+Your personality: Direct, practical, encouraging. You give real actionable advice — not generic tips. You speak like a trusted mentor who has helped hundreds of small businesses.
 
 Your expertise includes:
 - Local marketing and getting more customers
@@ -598,46 +679,16 @@ Rules:
 - Always tailor advice to their specific business type and goal
 - Give specific, actionable steps — not vague suggestions
 - Keep responses focused and scannable (use short paragraphs or bullet points when listing steps)
-- Be encouraging but honest — if something won't work for their situation, say so
-- Ask follow-up questions when you need more context to give better advice
-- Never give legal or financial advice — recommend professionals for those specifics`;
+- Be encouraging but honest
+- Ask follow-up questions when you need more context
+- Never give legal or financial advice — recommend professionals for those`;
 }
 
-// ── Welcome Message ───────────────────────────────────────────────────
-async function sendWelcome() {
-  showMessages();
-  setLoading(true);
-  try {
-    const res = await fetch(PROXY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 1000,
-        system: buildSystemPrompt(),
-        messages: [{
-          role: 'user',
-          content: `Introduce yourself briefly and give me one specific insight or quick win for my ${profile.bizType} business focused on my goal to ${profile.goal}. Keep it short and punchy.`
-        }]
-      })
-    });
-    const text = await res.text();
-    const data = JSON.parse(text);
-    const reply = data.content?.[0]?.text || "Hey! I'm your Ruby Wall Business Advisor. Ask me anything about growing your business.";
-    addMessage('advisor', reply);
-    messages.push({ role: 'assistant', content: reply });
-  } catch {
-    addMessage('advisor', "Hey! I'm your Ruby Wall Business Advisor. I'm here to help you grow your business. What's on your mind?");
-  }
-  setLoading(false);
-}
-
-// ── Chat ──────────────────────────────────────────────────────────────
+// ── CHAT ──────────────────────────────────────────────────────────────
 function showMessages() {
   document.getElementById('empty-state').classList.add('hidden');
-  document.getElementById('messages').style.display = 'flex';
-  document.getElementById('messages').style.flexDirection = 'column';
-  document.getElementById('messages').style.gap = '16px';
+  const msgs = document.getElementById('messages');
+  msgs.style.display = 'flex';
 }
 
 function addMessage(role, content) {
@@ -661,7 +712,30 @@ function setLoading(state) {
   if (msgs) msgs.scrollTop = msgs.scrollHeight;
 }
 
+async function sendWelcome() {
+  showMessages();
+  setLoading(true);
+  try {
+    const res = await fetch(PROXY, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5', max_tokens: 1000,
+        system: buildSystemPrompt(),
+        messages: [{ role: 'user', content: `Introduce yourself briefly and give me one specific quick win for my ${profile.bizType} business focused on my goal to ${profile.goal}. Keep it short and punchy.` }]
+      })
+    });
+    const data = JSON.parse(await res.text());
+    const reply = data.content?.[0]?.text || "Hey! I'm your Ruby Wall Business Advisor. Ask me anything about growing your business.";
+    addMessage('advisor', reply);
+    messages.push({ role: 'assistant', content: reply });
+  } catch {
+    addMessage('advisor', "Hey! I'm your Ruby Wall Business Advisor. What's on your mind?");
+  }
+  setLoading(false);
+}
+
 async function sendMessage() {
+  if (currentTier === 'trial' && trialMsgsUsed >= TRIAL_LIMIT) return;
   const input = document.getElementById('msg-input');
   const txt = input.value.trim();
   if (!txt || loading) return;
@@ -673,19 +747,18 @@ async function sendMessage() {
   input.style.height = 'auto';
   setLoading(true);
 
+  if (currentTier === 'trial') {
+    trialMsgsUsed++;
+    localStorage.setItem('rw-trial-used', trialMsgsUsed);
+    updateTrialCounter();
+  }
+
   try {
     const res = await fetch(PROXY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 1000,
-        system: buildSystemPrompt(),
-        messages: messages,
-      })
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1000, system: buildSystemPrompt(), messages })
     });
-    const text = await res.text();
-    const data = JSON.parse(text);
+    const data = JSON.parse(await res.text());
     const reply = data.content?.[0]?.text || 'I had trouble responding. Please try again.';
     addMessage('advisor', reply);
     messages.push({ role: 'assistant', content: reply });
@@ -701,10 +774,7 @@ function quickStart(btn) {
 }
 
 function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 }
 
 function autoResize(el) {
@@ -712,7 +782,7 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
-// ── Profile Modal ─────────────────────────────────────────────────────
+// ── PROFILE ───────────────────────────────────────────────────────────
 function openProfile() {
   document.getElementById('p-biz-type').value = profile.bizType;
   document.getElementById('p-goal').value = profile.goal;
@@ -720,9 +790,7 @@ function openProfile() {
   document.getElementById('profile-modal').classList.add('show');
 }
 
-function closeProfile() {
-  document.getElementById('profile-modal').classList.remove('show');
-}
+function closeProfile() { document.getElementById('profile-modal').classList.remove('show'); }
 
 function saveProfile() {
   profile.bizType = document.getElementById('p-biz-type').value.trim() || profile.bizType;
@@ -731,7 +799,6 @@ function saveProfile() {
   localStorage.setItem('rw-advisor-profile', JSON.stringify(profile));
   showContextBar();
   closeProfile();
-  // Reset chat with new context
   messages = [];
   document.getElementById('messages').innerHTML = '';
   document.getElementById('empty-state').classList.remove('hidden');
@@ -739,8 +806,8 @@ function saveProfile() {
   sendWelcome();
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────
-loadProfile();
+// ── BOOT ──────────────────────────────────────────────────────────────
+checkSession();
 </script>
 </body>
 </html>

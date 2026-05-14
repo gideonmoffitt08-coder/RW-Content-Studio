@@ -1,813 +1,1210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ruby Wall — AI Business Advisor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0c0c0f; --surface: #141418; --surface2: #1a1a20;
-      --border: rgba(255,255,255,0.06); --red: #e11d48; --red-dark: #9f1239;
-      --red-glow: rgba(225,29,72,0.12); --text: #f0f0f0; --muted: #666; --sub: #444;
-    }
-    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-    body::before { content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(ellipse at 20% 20%, rgba(225,29,72,0.04) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(225,29,72,0.03) 0%, transparent 50%); pointer-events: none; z-index: 0; }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruby Wall — Content Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ruby: #D90037;
+  --ruby2: #FF1F5A;
+  --ruby3: #FF6B8A;
+  --dark: #080408;
+  --dark2: #110810;
+  --card: #160D14;
+  --border: rgba(217,0,55,0.18);
+  --border2: rgba(255,255,255,0.06);
+  --text: #F2EBF0;
+  --muted: #7A6070;
+  --cream: #F5E6D3;
+  --gold: #C9A84C;
+}
 
-    /* ── LOGIN SCREEN ── */
-    #login-screen {
-      position: fixed; inset: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px; background: var(--bg);
-    }
-    #login-screen.hidden { display: none; }
-    .login-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 24px; padding: 48px 40px; max-width: 420px; width: 100%;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-    }
-    .login-logo {
-      width: 56px; height: 56px; border-radius: 16px;
-      background: linear-gradient(135deg, var(--red), var(--red-dark));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; margin-bottom: 24px;
-      box-shadow: 0 0 40px rgba(225,29,72,0.3);
-    }
-    .login-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.03em; margin-bottom: 6px; }
-    .login-title span { color: var(--red); }
-    .login-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
-    .login-field { margin-bottom: 16px; }
-    .login-field label { display: block; color: #888; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
-    .login-input {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 13px 16px; color: var(--text); font-size: 15px;
-      font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s;
-    }
-    .login-input:focus { border-color: rgba(225,29,72,0.4); }
-    .login-btn {
-      width: 100%; background: linear-gradient(135deg, var(--red), var(--red-dark));
-      border: none; border-radius: 10px; padding: 14px 0; color: #fff;
-      font-weight: 700; font-size: 15px; cursor: pointer;
-      font-family: 'DM Sans', sans-serif; margin-top: 8px;
-      box-shadow: 0 4px 20px rgba(225,29,72,0.3); transition: opacity 0.2s;
-    }
-    .login-btn:hover { opacity: 0.9; }
-    .login-error {
-      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 8px; padding: 10px 14px; color: #fca5a5;
-      font-size: 13px; margin-top: 12px; display: none;
-    }
-    .login-error.show { display: block; }
-    .login-footer { color: var(--sub); font-size: 12px; text-align: center; margin-top: 20px; }
+* { margin:0; padding:0; box-sizing:border-box; }
 
-    /* ── EXPIRED SCREEN ── */
-    #expired-screen {
-      position: fixed; inset: 0; z-index: 100;
-      display: none; align-items: center; justify-content: center;
-      padding: 24px; background: var(--bg);
-    }
-    #expired-screen.show { display: flex; }
-    .expired-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 24px; padding: 48px 40px; max-width: 420px; width: 100%; text-align: center;
-    }
-    .expired-icon { font-size: 48px; margin-bottom: 20px; }
-    .expired-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; margin-bottom: 10px; }
-    .expired-sub { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
-    .expired-contact {
-      background: var(--red-glow); border: 1px solid rgba(225,29,72,0.2);
-      border-radius: 10px; padding: 14px 16px; color: #aaa; font-size: 13px;
-    }
-    .expired-contact strong { color: var(--red); }
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-    /* ── ADMIN PANEL ── */
-    #admin-panel {
-      position: fixed; inset: 0; z-index: 90;
-      display: none; flex-direction: column;
-      background: var(--bg);
-    }
-    #admin-panel.show { display: flex; }
-    .admin-header {
-      padding: 16px 24px; border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; gap: 12px;
-      background: rgba(12,12,15,0.95);
-    }
-    .admin-logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--red), var(--red-dark)); display: flex; align-items: center; justify-content: center; font-size: 17px; }
-    .admin-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; }
-    .admin-badge { background: rgba(225,29,72,0.15); border: 1px solid rgba(225,29,72,0.3); border-radius: 6px; padding: 3px 10px; color: var(--red); font-size: 11px; font-weight: 700; }
-    .admin-logout { margin-left: auto; background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; color: var(--muted); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-    .admin-body { flex: 1; overflow-y: auto; padding: 28px 24px; max-width: 700px; width: 100%; margin: 0 auto; }
-    .admin-section { margin-bottom: 36px; }
-    .admin-section h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 6px; }
-    .admin-section p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
-    .gen-row { display: flex; gap: 10px; margin-bottom: 12px; }
-    .tier-select {
-      flex: 1; background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 11px 14px; color: var(--text);
-      font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none;
-    }
-    .tier-select option { background: var(--surface2); }
-    .gen-btn {
-      background: linear-gradient(135deg, var(--red), var(--red-dark));
-      border: none; border-radius: 10px; padding: 11px 20px;
-      color: #fff; font-weight: 700; font-size: 13px;
-      cursor: pointer; font-family: 'DM Sans', sans-serif;
-      white-space: nowrap;
-    }
-    .code-result {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 14px 16px; display: none;
-      align-items: center; gap: 12px; margin-bottom: 20px;
-    }
-    .code-result.show { display: flex; }
-    .code-val { font-family: monospace; font-size: 15px; color: var(--red); font-weight: 700; flex: 1; }
-    .code-meta { color: var(--muted); font-size: 12px; }
-    .copy-code-btn {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; padding: 7px 14px; color: var(--text);
-      font-size: 12px; font-weight: 600; cursor: pointer;
-      font-family: 'DM Sans', sans-serif; white-space: nowrap;
-    }
-    .codes-list { display: flex; flex-direction: column; gap: 8px; }
-    .code-item {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 12px 16px;
-      display: flex; align-items: center; gap: 12px;
-    }
-    .code-item-val { font-family: monospace; font-size: 13px; color: #aaa; flex: 1; }
-    .code-tier { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 5px; }
-    .code-tier.paid { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
-    .code-tier.trial { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
-    .code-expiry { color: var(--muted); font-size: 12px; }
-    .code-expired-tag { color: #f87171; font-size: 11px; font-weight: 700; }
-    .delete-code-btn { background: transparent; border: none; color: var(--sub); font-size: 16px; cursor: pointer; padding: 2px 6px; }
-    .delete-code-btn:hover { color: #f87171; }
-    .no-codes { color: var(--sub); font-size: 13px; text-align: center; padding: 20px; }
-    .admin-enter-btn {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 13px 0; color: var(--text);
-      font-weight: 600; font-size: 14px; cursor: pointer;
-      font-family: 'DM Sans', sans-serif; transition: all 0.2s;
-    }
-    .admin-enter-btn:hover { border-color: rgba(225,29,72,0.3); }
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -5%, rgba(217,0,55,0.13) 0%, transparent 55%),
+    radial-gradient(ellipse 30% 40% at 95% 95%, rgba(255,31,90,0.07) 0%, transparent 50%);
+  pointer-events:none; z-index:0;
+}
 
-    /* ── ONBOARDING ── */
-    #onboarding { position: fixed; inset: 0; z-index: 50; background: rgba(12,12,15,0.97); display: flex; align-items: center; justify-content: center; padding: 24px; }
-    #onboarding.hidden { display: none; }
-    #onboarding-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px 36px; max-width: 480px; width: 100%; box-shadow: 0 40px 80px rgba(0,0,0,0.5); }
-    #ob-logo { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--red), var(--red-dark)); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; box-shadow: 0 0 30px rgba(225,29,72,0.3); }
-    #ob-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.03em; margin-bottom: 6px; }
-    #ob-title span { color: var(--red); }
-    #ob-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
-    .ob-step { display: none; }
-    .ob-step.active { display: block; }
-    .ob-question { color: var(--text); font-size: 15px; font-weight: 600; margin-bottom: 14px; font-family: 'Syne', sans-serif; }
-    .ob-question span { color: var(--red); }
-    .ob-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text); font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; margin-bottom: 16px; }
-    .ob-input:focus { border-color: rgba(225,29,72,0.4); }
-    .ob-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-    .ob-option { padding: 12px 16px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: #aaa; font-size: 14px; font-weight: 500; transition: all 0.15s; text-align: left; font-family: 'DM Sans', sans-serif; }
-    .ob-option:hover { border-color: rgba(225,29,72,0.3); color: var(--text); }
-    .ob-option.selected { border-color: var(--red); background: var(--red-glow); color: var(--text); }
-    .ob-row { display: flex; gap: 10px; align-items: center; }
-    #ob-back { background: transparent; border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-    #ob-next { flex: 1; background: linear-gradient(135deg, var(--red), var(--red-dark)); border: none; border-radius: 10px; padding: 13px 0; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; box-shadow: 0 4px 20px rgba(225,29,72,0.3); }
-    .ob-progress { display: flex; gap: 6px; margin-bottom: 28px; }
-    .ob-dot { height: 3px; flex: 1; border-radius: 2px; background: var(--border); transition: background 0.3s; }
-    .ob-dot.done { background: var(--red); }
+/* ══════════════════════════════
+   AUTH
+══════════════════════════════ */
+.auth-wrap {
+  position:fixed; inset:0; z-index:300;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+  background: var(--dark);
+}
+.auth-wrap.gone { display:none; }
 
-    /* ── HEADER ── */
-    #header { position: relative; z-index: 10; padding: 16px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); background: rgba(12,12,15,0.95); backdrop-filter: blur(10px); }
-    #logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--red), var(--red-dark)); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; box-shadow: 0 0 20px rgba(225,29,72,0.3); }
-    #header-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: -0.02em; }
-    #header-sub { color: var(--muted); font-size: 11px; }
-    #header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-    #trial-counter { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25); border-radius: 20px; padding: 5px 12px; color: #fbbf24; font-size: 12px; font-weight: 600; display: none; }
-    #profile-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
-    #logout-btn { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; color: var(--muted); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.auth-card {
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:52px 44px;
+  width:100%; max-width:420px;
+  position:relative; overflow:hidden;
+  animation: riseUp .5s cubic-bezier(.16,1,.3,1) both;
+}
 
-    /* ── APP ── */
-    #app { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; height: calc(100vh - 69px); }
-    #quick-starts { padding: 16px 24px 0; display: flex; gap: 8px; flex-wrap: wrap; }
-    .qs-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; color: #888; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap; }
-    .qs-btn:hover { border-color: rgba(225,29,72,0.3); color: var(--text); background: var(--red-glow); }
-    #messages { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
-    .msg-row { display: flex; gap: 10px; max-width: 780px; }
-    .msg-row.user { margin-left: auto; flex-direction: row-reverse; }
-    .msg-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
-    .msg-icon.advisor { background: linear-gradient(135deg, var(--red), var(--red-dark)); box-shadow: 0 0 12px rgba(225,29,72,0.25); }
-    .msg-icon.user-icon { background: var(--surface2); border: 1px solid var(--border); color: #888; }
-    .msg-bubble { padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.65; max-width: calc(100% - 42px); }
-    .msg-bubble.advisor { background: var(--surface); border: 1px solid var(--border); border-radius: 4px 14px 14px 14px; color: var(--text); }
-    .msg-bubble.user { background: linear-gradient(135deg, var(--red), var(--red-dark)); border-radius: 14px 4px 14px 14px; color: #fff; box-shadow: 0 4px 16px rgba(225,29,72,0.25); }
-    #typing { display: none; align-items: center; gap: 10px; max-width: 780px; padding: 0 24px; }
-    #typing.show { display: flex; }
-    .typing-bubble { background: var(--surface); border: 1px solid var(--border); border-radius: 4px 14px 14px 14px; padding: 14px 18px; display: flex; gap: 5px; align-items: center; }
-    .t-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); opacity: 0.4; animation: tdot 1.2s infinite ease-in-out; }
-    .t-dot:nth-child(2) { animation-delay: 0.2s; }
-    .t-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes tdot { 0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-5px);opacity:1} }
-    #context-bar { display: none; margin: 12px 24px 0; background: var(--red-glow); border: 1px solid rgba(225,29,72,0.2); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #aaa; align-items: center; gap: 8px; }
-    #context-bar.show { display: flex; }
-    #context-bar span { color: var(--red); font-weight: 600; }
-    #empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px; }
-    #empty-state.hidden { display: none; }
-    .es-icon { width: 64px; height: 64px; border-radius: 18px; background: linear-gradient(135deg, var(--red), var(--red-dark)); display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px; box-shadow: 0 0 40px rgba(225,29,72,0.2); }
-    .es-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; margin-bottom: 8px; }
-    .es-title span { color: var(--red); }
-    .es-sub { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 320px; }
-    #input-area { padding: 16px 24px 20px; border-top: 1px solid var(--border); background: rgba(12,12,15,0.95); backdrop-filter: blur(10px); }
-    #input-row { display: flex; gap: 10px; align-items: flex-end; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 10px 10px 16px; transition: border-color 0.2s; }
-    #input-row:focus-within { border-color: rgba(225,29,72,0.3); }
-    #msg-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif; resize: none; max-height: 120px; line-height: 1.5; }
-    #msg-input::placeholder { color: var(--sub); }
-    #send-btn { width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0; background: linear-gradient(135deg, var(--red), var(--red-dark)); border: none; cursor: pointer; font-size: 15px; color: #fff; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 10px rgba(225,29,72,0.3); }
-    #send-btn:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; }
-    #input-hint { color: var(--sub); font-size: 11px; margin-top: 8px; text-align: center; }
-    #trial-limit-msg { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 12px 16px; color: #fbbf24; font-size: 13px; margin-bottom: 10px; display: none; text-align: center; }
+.auth-card::after {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--ruby), transparent);
+}
 
-    /* Profile modal */
-    #profile-modal { position: fixed; inset: 0; z-index: 40; background: rgba(12,12,15,0.9); display: none; align-items: center; justify-content: center; padding: 24px; }
-    #profile-modal.show { display: flex; }
-    #profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 420px; width: 100%; }
-    #profile-card h3 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; margin-bottom: 6px; }
-    #profile-card p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
-    .profile-field { margin-bottom: 16px; }
-    .profile-field label { display: block; color: #888; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
-    .profile-field input, .profile-field select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; }
-    .profile-field select option { background: var(--surface2); }
-    #profile-save { width: 100%; background: linear-gradient(135deg, var(--red), var(--red-dark)); border: none; border-radius: 10px; padding: 12px 0; color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px; }
-    #profile-close { width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 10px; padding: 11px 0; color: var(--muted); font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px; }
-  </style>
+.auth-brand {
+  text-align:center; margin-bottom:36px;
+}
+.auth-brand-name {
+  font-family:'Fraunces',serif;
+  font-size:30px; font-weight:900;
+  background: linear-gradient(135deg, var(--ruby2), var(--ruby3));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  letter-spacing:1px;
+}
+.auth-brand-tag {
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:5px;
+  color:var(--muted); margin-top:5px;
+}
+
+.auth-heading {
+  font-family:'Fraunces',serif;
+  font-size:24px; font-weight:700; font-style:italic;
+  text-align:center; margin-bottom:6px;
+}
+.auth-desc { font-size:13px; color:var(--muted); text-align:center; margin-bottom:32px; line-height:1.6; }
+
+.auth-err {
+  background: rgba(217,0,55,0.1);
+  border:1px solid rgba(217,0,55,0.3);
+  border-radius:10px; padding:10px 14px;
+  font-size:13px; color:var(--ruby3);
+  text-align:center; margin-bottom:16px; display:none;
+}
+.auth-err.show { display:block; }
+
+.field { display:flex; flex-direction:column; gap:7px; margin-bottom:16px; }
+.field-label {
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:2.5px;
+  color:var(--muted); text-transform:uppercase;
+}
+.field-input {
+  background:#0f0a0e;
+  border:1px solid var(--border2);
+  border-radius:12px; color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-size:15px; padding:14px 16px;
+  outline:none; width:100%;
+  -webkit-appearance:none;
+  transition: border-color .2s;
+}
+.field-input:focus { border-color: var(--ruby); }
+
+.auth-cta {
+  width:100%; padding:16px;
+  background: linear-gradient(135deg, var(--ruby), #8B0020);
+  border:none; border-radius:14px;
+  color:#fff; font-family:'Fraunces',serif;
+  font-size:18px; font-weight:700; font-style:italic;
+  cursor:pointer; transition:all .2s; margin-top:6px;
+  letter-spacing:.5px;
+}
+.auth-cta:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(217,0,55,.4); }
+.auth-cta:disabled { opacity:.4; transform:none; cursor:not-allowed; }
+
+.auth-divider { height:1px; background:var(--border2); margin:24px 0; }
+.auth-swap { text-align:center; font-size:13px; color:var(--muted); }
+.auth-swap a { color:var(--ruby2); cursor:pointer; font-weight:600; }
+.auth-swap a:hover { color:var(--ruby3); }
+
+/* ══════════════════════════════
+   APP SHELL
+══════════════════════════════ */
+.app { display:none; }
+.app.on { display:block; }
+
+nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(8,4,8,.9);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border2);
+  height:62px; padding:0 32px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-brand {
+  font-family:'Fraunces',serif;
+  font-size:20px; font-weight:900;
+  background:linear-gradient(135deg, var(--ruby2), var(--ruby3));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.nav-brand span {
+  font-family:'Space Mono',monospace;
+  font-size:8px; letter-spacing:3px;
+  display:block; margin-top:-2px;
+  color:var(--muted); -webkit-text-fill-color:var(--muted);
+}
+.nav-right { display:flex; align-items:center; gap:10px; }
+.admin-pill {
+  display:none; align-items:center; gap:5px;
+  background:rgba(217,0,55,.15);
+  border:1px solid var(--border);
+  border-radius:20px; padding:4px 12px;
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:2px; color:var(--ruby2);
+}
+.admin-pill.on { display:flex; }
+.nav-ai {
+  background:linear-gradient(135deg, var(--ruby), var(--ruby2));
+  color:#fff; font-size:9px; font-weight:700;
+  letter-spacing:2px; padding:5px 12px;
+  border-radius:20px; font-family:'Space Mono',monospace;
+}
+.nav-out {
+  background:transparent; border:1px solid var(--border2);
+  color:var(--muted); font-size:11px; padding:5px 12px;
+  border-radius:8px; cursor:pointer; font-family:'Outfit',sans-serif;
+  transition:all .2s;
+}
+.nav-out:hover { border-color:var(--ruby); color:var(--ruby2); }
+
+/* ══════════════════════════════
+   MAIN
+══════════════════════════════ */
+main {
+  position:relative; z-index:1;
+  max-width:780px; margin:0 auto;
+  padding:56px 24px 100px;
+}
+
+/* ══════════════════════════════
+   STEP SYSTEM
+══════════════════════════════ */
+.step { display:none; animation: riseUp .45s cubic-bezier(.16,1,.3,1) both; }
+.step.active { display:block; }
+
+.step-eyebrow {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:4px;
+  color:var(--ruby2); text-transform:uppercase;
+  margin-bottom:12px; text-align:center;
+}
+.step-title {
+  font-family:'Fraunces',serif;
+  font-size:clamp(36px,6vw,58px);
+  font-weight:900; line-height:1;
+  text-align:center; margin-bottom:10px;
+}
+.step-title em { color:var(--ruby2); font-style:italic; }
+.step-sub {
+  font-size:15px; color:var(--muted);
+  text-align:center; max-width:480px;
+  margin:0 auto 48px; line-height:1.6;
+}
+
+/* Progress dots */
+.progress {
+  display:flex; justify-content:center;
+  gap:8px; margin-bottom:48px;
+}
+.pdot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--border2); transition:all .3s;
+}
+.pdot.done { background:var(--ruby); width:20px; border-radius:3px; }
+.pdot.active { background:var(--ruby2); }
+
+/* ══════════════════════════════
+   QUIZ CARDS
+══════════════════════════════ */
+.quiz-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+  gap:12px; margin-bottom:32px;
+}
+.qcard {
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:18px; padding:22px 16px;
+  text-align:center; cursor:pointer;
+  transition:all .2s; position:relative;
+  overflow:hidden;
+}
+.qcard::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(217,0,55,.1), transparent);
+  opacity:0; transition:opacity .2s;
+}
+.qcard:hover::before { opacity:1; }
+.qcard:hover { border-color:var(--border); transform:translateY(-2px); }
+.qcard.picked {
+  border-color:var(--ruby);
+  background:rgba(217,0,55,.1);
+}
+.qcard.picked::after {
+  content:'✓';
+  position:absolute; top:8px; right:10px;
+  font-size:11px; color:var(--ruby2); font-weight:700;
+}
+.qcard-icon { font-size:32px; margin-bottom:10px; }
+.qcard-label { font-size:13px; font-weight:600; color:var(--text); }
+.qcard-sub { font-size:11px; color:var(--muted); margin-top:3px; }
+
+/* ══════════════════════════════
+   INPUT FIELDS
+══════════════════════════════ */
+.big-input-wrap { margin-bottom:20px; }
+.big-label {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:3px;
+  color:var(--muted); text-transform:uppercase;
+  margin-bottom:10px; display:block;
+}
+.big-input {
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:16px; color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-size:16px; padding:18px 20px;
+  outline:none; width:100%;
+  -webkit-appearance:none;
+  transition:border-color .2s;
+}
+.big-input:focus { border-color:var(--ruby); }
+.big-input::placeholder { color:var(--muted); }
+
+/* Platform toggle */
+.platform-row {
+  display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px;
+}
+.ptab {
+  padding:10px 20px; border-radius:100px;
+  border:1px solid var(--border2);
+  background:var(--card); color:var(--muted);
+  font-size:13px; font-weight:500;
+  cursor:pointer; transition:all .2s;
+  font-family:'Outfit',sans-serif;
+}
+.ptab:hover { border-color:var(--ruby2); color:var(--ruby2); }
+.ptab.on { background:var(--ruby); border-color:var(--ruby); color:#fff; font-weight:700; }
+
+/* Count selector */
+.count-row { display:flex; gap:10px; margin-bottom:24px; }
+.cnum {
+  width:52px; height:52px; border-radius:14px;
+  border:1px solid var(--border2);
+  background:var(--card); color:var(--muted);
+  font-size:18px; font-weight:700;
+  cursor:pointer; transition:all .2s;
+  font-family:'Fraunces',serif;
+  display:flex; align-items:center; justify-content:center;
+}
+.cnum:hover { border-color:var(--ruby2); color:var(--ruby2); }
+.cnum.on { background:var(--ruby); border-color:var(--ruby); color:#fff; }
+
+/* ══════════════════════════════
+   NEXT BUTTON
+══════════════════════════════ */
+.next-btn {
+  width:100%; padding:18px;
+  background:linear-gradient(135deg, var(--ruby), #8B0020);
+  border:none; border-radius:16px; color:#fff;
+  font-family:'Fraunces',serif;
+  font-size:20px; font-weight:700; font-style:italic;
+  cursor:pointer; transition:all .25s;
+  letter-spacing:.5px; margin-top:8px;
+}
+.next-btn:hover { transform:translateY(-2px); box-shadow:0 12px 36px rgba(217,0,55,.45); }
+.next-btn:disabled { opacity:.35; transform:none; cursor:not-allowed; }
+
+.back-link {
+  display:block; text-align:center;
+  margin-top:16px; font-size:13px;
+  color:var(--muted); cursor:pointer;
+  transition:color .2s;
+}
+.back-link:hover { color:var(--ruby2); }
+
+/* ══════════════════════════════
+   LOADING
+══════════════════════════════ */
+#loadingStep {
+  text-align:center; padding:80px 0;
+}
+.load-anim {
+  display:inline-flex; gap:10px; margin-bottom:32px;
+}
+.ldot {
+  width:12px; height:12px; border-radius:50%;
+  animation: ldance .9s ease infinite;
+}
+.ldot:nth-child(1) { background:var(--ruby); }
+.ldot:nth-child(2) { background:var(--ruby2); animation-delay:.15s; }
+.ldot:nth-child(3) { background:var(--ruby3); animation-delay:.3s; }
+
+@keyframes ldance {
+  0%,100% { transform:translateY(0); opacity:.3; }
+  50% { transform:translateY(-14px); opacity:1; }
+}
+
+.load-phrase {
+  font-family:'Fraunces',serif;
+  font-size:28px; font-weight:700; font-style:italic;
+  color:var(--text); margin-bottom:10px;
+  animation: fadePhrase 2s ease infinite;
+}
+@keyframes fadePhrase {
+  0%,100% { opacity:.5; }
+  50% { opacity:1; }
+}
+.load-sub { font-size:13px; color:var(--muted); letter-spacing:1px; }
+
+/* ══════════════════════════════
+   RESULTS
+══════════════════════════════ */
+.results-header {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  margin-bottom:32px; flex-wrap:wrap; gap:12px;
+}
+.results-title {
+  font-family:'Fraunces',serif;
+  font-size:32px; font-weight:900;
+}
+.results-title span { color:var(--ruby2); font-style:italic; }
+.results-actions { display:flex; gap:8px; }
+.r-btn {
+  padding:8px 16px; border-radius:10px;
+  border:1px solid var(--border2);
+  background:transparent; color:var(--text);
+  font-size:12px; cursor:pointer;
+  transition:all .2s; font-family:'Outfit',sans-serif;
+  font-weight:500;
+}
+.r-btn:hover { border-color:var(--ruby2); color:var(--ruby2); }
+.r-btn.solid { background:var(--ruby); border-color:var(--ruby); color:#fff; font-weight:700; }
+.r-btn.solid:hover { background:var(--ruby2); border-color:var(--ruby2); }
+
+/* Phone mockups */
+.posts-list { display:flex; flex-direction:column; gap:28px; }
+
+.post-wrap { animation: riseUp .4s ease both; }
+
+.post-platform-bar {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px; padding:0 4px;
+}
+.post-plat-label {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:2px;
+  padding:4px 12px; border-radius:20px;
+  font-weight:700;
+}
+.post-plat-label.ig { background:rgba(217,0,55,.15); color:var(--ruby2); }
+.post-plat-label.fb { background:rgba(255,107,138,.12); color:var(--ruby3); }
+.post-plat-label.tt { background:rgba(201,168,76,.12); color:var(--gold); }
+
+.post-actions-top { display:flex; gap:8px; }
+
+.phone-frame {
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:20px; overflow:hidden;
+  transition:border-color .2s;
+}
+.phone-frame:hover { border-color:rgba(217,0,55,.3); }
+
+/* Instagram style */
+.ig-header {
+  padding:12px 16px;
+  display:flex; align-items:center; gap:10px;
+  border-bottom:1px solid var(--border2);
+}
+.ig-avatar {
+  width:32px; height:32px; border-radius:50%;
+  background:linear-gradient(135deg, var(--ruby), var(--ruby3));
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; color:#fff;
+  flex-shrink:0;
+}
+.ig-handle { font-size:13px; font-weight:600; }
+.ig-time { font-size:11px; color:var(--muted); }
+
+.post-image-placeholder {
+  background:linear-gradient(135deg, #1a0a10, #0d0508);
+  height:200px;
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.post-image-placeholder::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 60% 60% at 30% 40%, rgba(217,0,55,.15) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 70% 70%, rgba(255,107,138,.1) 0%, transparent 50%);
+}
+.post-image-inner {
+  position:relative; z-index:1; text-align:center;
+}
+.post-image-icon { font-size:28px; opacity:.4; margin-bottom:6px; }
+.post-image-text { font-size:11px; color:var(--muted); letter-spacing:1px; }
+
+.ig-actions {
+  padding:12px 16px 8px;
+  display:flex; gap:14px;
+}
+.ig-action { font-size:18px; cursor:pointer; opacity:.7; transition:opacity .2s; }
+.ig-action:hover { opacity:1; }
+
+.post-body { padding:0 16px 16px; }
+.post-username { font-size:13px; font-weight:700; margin-bottom:4px; }
+.post-caption {
+  font-size:14px; line-height:1.7;
+  color:var(--text); white-space:pre-wrap;
+}
+.post-hashtags { font-size:13px; color:var(--ruby3); margin-top:8px; opacity:.8; }
+
+/* TikTok style */
+.tt-frame {
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:20px; overflow:hidden;
+}
+.tt-video-area {
+  background:linear-gradient(160deg, #0d0508, #1a0510, #0a0308);
+  height:220px; position:relative;
+  display:flex; align-items:center; justify-content:center;
+}
+.tt-overlay {
+  position:absolute; bottom:12px; left:16px; right:50px;
+}
+.tt-handle { font-size:13px; font-weight:700; margin-bottom:4px; }
+.tt-caption-preview {
+  font-size:12px; color:rgba(255,255,255,.8);
+  line-height:1.4; display:-webkit-box;
+  -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.tt-side {
+  position:absolute; right:12px; bottom:12px;
+  display:flex; flex-direction:column; align-items:center; gap:16px;
+}
+.tt-btn { text-align:center; }
+.tt-btn-icon { font-size:22px; }
+.tt-btn-count { font-size:10px; color:rgba(255,255,255,.7); }
+.tt-bottom { padding:12px 16px; }
+.tt-song {
+  font-size:11px; color:var(--muted);
+  display:flex; align-items:center; gap:6px;
+}
+
+/* Regen single post */
+.regen-single {
+  display:flex; align-items:center; gap:6px;
+  font-size:12px; color:var(--muted);
+  cursor:pointer; padding:6px 12px;
+  border:1px solid var(--border2);
+  border-radius:8px; background:transparent;
+  transition:all .2s; font-family:'Outfit',sans-serif;
+}
+.regen-single:hover { border-color:var(--ruby2); color:var(--ruby2); }
+
+.copy-post-btn {
+  font-size:12px; color:var(--muted);
+  cursor:pointer; padding:6px 12px;
+  border:1px solid var(--border2);
+  border-radius:8px; background:transparent;
+  transition:all .2s; font-family:'Outfit',sans-serif;
+}
+.copy-post-btn:hover { border-color:var(--ruby2); color:var(--ruby2); }
+.copy-post-btn.done { border-color:#00e87a; color:#00e87a; }
+
+/* Calendar */
+.cal-section { margin-top:48px; }
+.cal-title {
+  font-family:'Fraunces',serif;
+  font-size:24px; font-weight:700;
+  margin-bottom:20px;
+}
+.cal-grid {
+  display:grid; grid-template-columns:repeat(7,1fr); gap:8px;
+}
+.cal-col-head {
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:1px;
+  color:var(--muted); text-align:center; padding:4px 0;
+}
+.cal-cell {
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:12px; padding:10px 8px;
+  min-height:90px;
+}
+.cal-num {
+  font-family:'Space Mono',monospace;
+  font-size:10px; color:var(--muted); margin-bottom:8px;
+}
+.cal-tag {
+  background:rgba(217,0,55,.1);
+  border:1px solid rgba(217,0,55,.2);
+  border-radius:5px; padding:4px 6px;
+  font-size:9px; color:var(--ruby2);
+  line-height:1.3; margin-bottom:3px;
+}
+.cal-tag.b { background:rgba(255,107,138,.1); border-color:rgba(255,107,138,.2); color:var(--ruby3); }
+.cal-tag.c { background:rgba(201,168,76,.1); border-color:rgba(201,168,76,.2); color:var(--gold); }
+
+/* Start over */
+.start-over {
+  display:block; text-align:center;
+  margin-top:40px; font-size:13px;
+  color:var(--muted); cursor:pointer;
+  transition:color .2s;
+}
+.start-over:hover { color:var(--ruby2); }
+
+/* Animations */
+@keyframes riseUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+/* Mobile */
+@media(max-width:600px) {
+  nav { padding:0 16px; }
+  main { padding:36px 16px 80px; }
+  .quiz-grid { grid-template-columns:repeat(2,1fr); }
+  .auth-card { padding:36px 24px; }
+  .cal-grid { grid-template-columns:repeat(7,1fr); gap:4px; }
+  .cal-cell { padding:6px 4px; min-height:70px; }
+}
+</style>
 </head>
 <body>
 
-<!-- ── LOGIN SCREEN ── -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-logo">💎</div>
-    <div class="login-title">Ruby Wall <span>Advisor</span></div>
-    <div class="login-sub">Enter your access code or admin password to continue.</div>
-    <div class="login-field">
-      <label>Password or Invite Code</label>
-      <input class="login-input" id="login-input" type="password" placeholder="Enter your code..." onkeydown="if(event.key==='Enter')doLogin()" />
+<!-- ══════════ AUTH ══════════ -->
+<div class="auth-wrap" id="authLogin">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-name">Ruby Wall</div>
+      <div class="auth-brand-tag">CONTENT STUDIO</div>
     </div>
-    <button class="login-btn" onclick="doLogin()">Access Advisor →</button>
-    <div class="login-error" id="login-error">Invalid code or password. Please try again.</div>
-    <div class="login-footer">Don't have a code? Contact Ruby Wall to get access.</div>
+    <div class="auth-heading">Welcome back.</div>
+    <p class="auth-desc">Sign in to your AI content workspace.</p>
+    <div class="auth-err" id="loginErr">Incorrect password. Try again.</div>
+    <div class="field">
+      <div class="field-label">Password</div>
+      <input class="field-input" type="password" id="loginPw" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="auth-cta" onclick="doLogin()">Sign In</button>
+    <div class="auth-divider"></div>
+    <div class="auth-swap">New client? <a onclick="toSignup()">Create account →</a></div>
   </div>
 </div>
 
-<!-- ── EXPIRED SCREEN ── -->
-<div id="expired-screen">
-  <div class="expired-card">
-    <div class="expired-icon">⏰</div>
-    <div class="expired-title">Access Expired</div>
-    <div class="expired-sub">Your invite code has expired. Reach out to Ruby Wall to renew your access or upgrade to a paid plan.</div>
-    <div class="expired-contact">Contact <strong>Ruby Wall</strong> to get a new invite code and continue growing your business.</div>
+<div class="auth-wrap gone" id="authSignup">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-name">Ruby Wall</div>
+      <div class="auth-brand-tag">CONTENT STUDIO</div>
+    </div>
+    <div class="auth-heading">Get started.</div>
+    <p class="auth-desc">Enter your invite code and create a password.</p>
+    <div class="auth-err" id="signupErr">Invalid invite code.</div>
+    <div class="field">
+      <div class="field-label">Invite Code</div>
+      <input class="field-input" type="text" id="invCode" placeholder="Enter your invite code" style="text-transform:uppercase"/>
+    </div>
+    <div class="field">
+      <div class="field-label">Create Password</div>
+      <input class="field-input" type="password" id="signPw" placeholder="Choose a password"/>
+    </div>
+    <div class="field">
+      <div class="field-label">Confirm Password</div>
+      <input class="field-input" type="password" id="signPw2" placeholder="Confirm password" onkeydown="if(event.key==='Enter')doSignup()"/>
+    </div>
+    <button class="auth-cta" onclick="doSignup()">Create Account</button>
+    <div class="auth-divider"></div>
+    <div class="auth-swap">Already have an account? <a onclick="toLogin()">Sign in →</a></div>
   </div>
 </div>
 
-<!-- ── ADMIN PANEL ── -->
-<div id="admin-panel">
-  <div class="admin-header">
-    <div class="admin-logo">💎</div>
-    <div>
-      <div class="admin-title">Ruby Wall Advisor</div>
+<!-- ══════════ APP ══════════ -->
+<div class="app" id="theApp">
+
+  <nav>
+    <div class="nav-brand">Ruby Wall <span>CONTENT STUDIO</span></div>
+    <div class="nav-right">
+      <div class="admin-pill" id="adminPill">⚡ ADMIN</div>
+      <div class="nav-ai">AI POWERED</div>
+      <button class="nav-out" onclick="doLogout()">Sign Out</button>
     </div>
-    <div class="admin-badge">ADMIN</div>
-    <button class="admin-logout" onclick="doLogout()">Log Out</button>
-  </div>
-  <div class="admin-body">
-    <div class="admin-section">
-      <h3>Generate Invite Code</h3>
-      <p>Create a new code for a client. Codes expire 30 days from generation.</p>
-      <div class="gen-row">
-        <select class="tier-select" id="tier-select">
-          <option value="paid">💳 Paid Client — Full Access</option>
-          <option value="trial">🔓 Free Trial — 10 Messages</option>
-        </select>
-        <button class="gen-btn" onclick="generateCode()">Generate</button>
+  </nav>
+
+  <main>
+
+    <!-- Progress -->
+    <div class="progress" id="progressDots">
+      <div class="pdot active" id="pd0"></div>
+      <div class="pdot" id="pd1"></div>
+      <div class="pdot" id="pd2"></div>
+      <div class="pdot" id="pd3"></div>
+    </div>
+
+    <!-- STEP 1: Industry -->
+    <div class="step active" id="step1">
+      <div class="step-eyebrow">Step 1 of 3</div>
+      <div class="step-title">What's your <em>business?</em></div>
+      <p class="step-sub">Pick the category that fits best — we'll tailor the content to your world.</p>
+      <div class="quiz-grid" id="industryGrid">
+        <div class="qcard" onclick="pickIndustry(this,'Restaurant / Food')"><div class="qcard-icon">🍽️</div><div class="qcard-label">Restaurant</div><div class="qcard-sub">Food & dining</div></div>
+        <div class="qcard" onclick="pickIndustry(this,'Barbershop / Salon')"><div class="qcard-icon">✂️</div><div class="qcard-label">Barber / Salon</div><div class="qcard-sub">Hair & beauty</div></div>
+        <div class="qcard" onclick="pickIndustry(this,'Gym / Fitness')"><div class="qcard-icon">💪</div><div class="qcard-label">Gym / Fitness</div><div class="qcard-sub">Health & wellness</div></div>
+        <div class="qcard" onclick="pickIndustry(this,'Retail Store')"><div class="qcard-icon">🛍️</div><div class="qcard-label">Retail</div><div class="qcard-sub">Products & shop</div></div>
+        <div class="qcard" onclick="pickIndustry(this,'Real Estate')"><div class="qcard-icon">🏡</div><div class="qcard-label">Real Estate</div><div class="qcard-sub">Properties & homes</div></div>
+        <div class="qcard" onclick="pickIndustry(this,'Auto / Mechanic Shop')"><div class="qcard-icon">🚗</div><div class="qcard-label">Auto</div><div class="qcard-sub">Cars & repairs</div></div>
+        <div class="qcard" onclick="pickIndustry(this,'Medical / Healthcare')"><div class="qcard-icon">🏥</div><div class="qcard-label">Healthcare</div><div class="qcard-sub">Medical & wellness</div></div>
+        <div class="qcard" onclick="pickIndustry(this,'Professional Services')"><div class="qcard-icon">💼</div><div class="qcard-label">Services</div><div class="qcard-sub">Consulting & pro</div></div>
+        <div class="qcard" onclick="pickIndustry(this,'Beauty / Spa')"><div class="qcard-icon">💅</div><div class="qcard-label">Beauty / Spa</div><div class="qcard-sub">Nails & aesthetics</div></div>
+        <div class="qcard" onclick="pickIndustry(this,'Other Local Business')"><div class="qcard-icon">📍</div><div class="qcard-label">Other</div><div class="qcard-sub">Something else</div></div>
       </div>
-      <div class="code-result" id="code-result">
-        <div>
-          <div class="code-val" id="gen-code-val"></div>
-          <div class="code-meta" id="gen-code-meta"></div>
+      <button class="next-btn" id="nextStep1" onclick="goStep(2)" disabled>Continue →</button>
+    </div>
+
+    <!-- STEP 2: Vibe + Details -->
+    <div class="step" id="step2">
+      <div class="step-eyebrow">Step 2 of 3</div>
+      <div class="step-title">Your <em>vibe</em> & details</div>
+      <p class="step-sub">Tell us who you are and what you're pushing right now.</p>
+
+      <div class="big-input-wrap">
+        <label class="big-label">Business Name</label>
+        <input class="big-input" type="text" id="bizName" placeholder="e.g. Blessed Fit Zone" />
+      </div>
+
+      <div class="big-input-wrap">
+        <label class="big-label">What are you promoting? (optional)</label>
+        <input class="big-input" type="text" id="bizPromo" placeholder="e.g. Grand opening, summer special, new menu item..." />
+      </div>
+
+      <div class="big-input-wrap">
+        <label class="big-label">Your Brand Vibe</label>
+        <div class="quiz-grid" style="margin-top:10px;" id="vibeGrid">
+          <div class="qcard" onclick="pickVibe(this,'energetic and hype, use fire emojis and exclamation points')"><div class="qcard-icon">🔥</div><div class="qcard-label">Hype</div><div class="qcard-sub">High energy</div></div>
+          <div class="qcard" onclick="pickVibe(this,'funny and relatable, like texting a friend')"><div class="qcard-icon">😂</div><div class="qcard-label">Funny</div><div class="qcard-sub">Relatable & fun</div></div>
+          <div class="qcard" onclick="pickVibe(this,'motivational and inspiring, like a coach pushing you')"><div class="qcard-icon">💪</div><div class="qcard-label">Motivational</div><div class="qcard-sub">Inspiring</div></div>
+          <div class="qcard" onclick="pickVibe(this,'warm and personal, like talking to a neighbor you trust')"><div class="qcard-icon">❤️</div><div class="qcard-label">Warm</div><div class="qcard-sub">Personal & real</div></div>
+          <div class="qcard" onclick="pickVibe(this,'professional and credible, clean and confident')"><div class="qcard-icon">💼</div><div class="qcard-label">Professional</div><div class="qcard-sub">Sharp & clean</div></div>
+          <div class="qcard" onclick="pickVibe(this,'luxury and exclusive, elegant and aspirational')"><div class="qcard-icon">✨</div><div class="qcard-label">Luxury</div><div class="qcard-sub">Premium feel</div></div>
         </div>
-        <button class="copy-code-btn" onclick="copyGenCode()">Copy</button>
+      </div>
+
+      <button class="next-btn" id="nextStep2" onclick="goStep(3)" disabled>Continue →</button>
+      <a class="back-link" onclick="goStep(1)">← Back</a>
+    </div>
+
+    <!-- STEP 3: Platform + Count -->
+    <div class="step" id="step3">
+      <div class="step-eyebrow">Step 3 of 3</div>
+      <div class="step-title">Almost <em>ready.</em></div>
+      <p class="step-sub">Where are you posting and how many posts do you need?</p>
+
+      <div class="big-input-wrap">
+        <label class="big-label">Platform</label>
+        <div class="platform-row">
+          <button class="ptab on" onclick="setPlatform(this,'instagram')">📸 Instagram</button>
+          <button class="ptab" onclick="setPlatform(this,'facebook')">👥 Facebook</button>
+          <button class="ptab" onclick="setPlatform(this,'tiktok')">🎵 TikTok</button>
+          <button class="ptab" onclick="setPlatform(this,'all')">⚡ All Three</button>
+        </div>
+      </div>
+
+      <div class="big-input-wrap">
+        <label class="big-label">How many posts?</label>
+        <div class="count-row">
+          <div class="cnum" onclick="setCount(this,3)">3</div>
+          <div class="cnum on" onclick="setCount(this,5)">5</div>
+          <div class="cnum" onclick="setCount(this,7)">7</div>
+          <div class="cnum" onclick="setCount(this,10)">10</div>
+        </div>
+      </div>
+
+      <div class="big-input-wrap">
+        <label class="big-label">Include Hashtags?</label>
+        <div class="platform-row">
+          <button class="ptab on" id="hashYes" onclick="setHash(true)">Yes please</button>
+          <button class="ptab" id="hashNo" onclick="setHash(false)">No thanks</button>
+        </div>
+      </div>
+
+      <div class="big-input-wrap">
+        <label class="big-label">Add a content calendar?</label>
+        <div class="platform-row">
+          <button class="ptab" id="calYes" onclick="setCal(true)">Yes — 1 week</button>
+          <button class="ptab on" id="calNo" onclick="setCal(false)">Not this time</button>
+        </div>
+      </div>
+
+      <button class="next-btn" onclick="generate()">✦ Generate My Content</button>
+      <a class="back-link" onclick="goStep(2)">← Back</a>
+    </div>
+
+    <!-- LOADING -->
+    <div class="step" id="loadingStep">
+      <div id="loadingStep" style="text-align:center;padding:80px 0;">
+        <div class="load-anim">
+          <div class="ldot"></div>
+          <div class="ldot"></div>
+          <div class="ldot"></div>
+        </div>
+        <div class="load-phrase" id="loadPhrase">Writing your story...</div>
+        <div class="load-sub">CRAFTING CONTENT THAT ACTUALLY SOUNDS LIKE YOU</div>
       </div>
     </div>
 
-    <div class="admin-section">
-      <h3>Active Codes</h3>
-      <p>All generated invite codes and their status.</p>
-      <div class="codes-list" id="codes-list"></div>
-    </div>
-
-    <div class="admin-section">
-      <button class="admin-enter-btn" onclick="enterAdvisor()">→ Enter Business Advisor</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── ONBOARDING ── -->
-<div id="onboarding" class="hidden">
-  <div id="onboarding-card">
-    <div id="ob-logo">💎</div>
-    <div id="ob-title">Ruby Wall <span>Advisor</span></div>
-    <div id="ob-sub">Your personal AI business consultant. Answer 3 quick questions so I can give you advice that actually fits your situation.</div>
-    <div class="ob-progress">
-      <div class="ob-dot done" id="dot-0"></div>
-      <div class="ob-dot" id="dot-1"></div>
-      <div class="ob-dot" id="dot-2"></div>
-    </div>
-    <div class="ob-step active" id="step-0">
-      <div class="ob-question"><span>01 /</span> What type of business do you have?</div>
-      <input class="ob-input" id="biz-type-input" placeholder="e.g. Auto Repair Shop, Hair Salon, Landscaping..." />
-    </div>
-    <div class="ob-step" id="step-1">
-      <div class="ob-question"><span>02 /</span> What's your biggest goal right now?</div>
-      <div class="ob-options">
-        <button class="ob-option" data-val="Get more customers">🎯 Get more customers</button>
-        <button class="ob-option" data-val="Grow my online presence">📱 Grow my online presence</button>
-        <button class="ob-option" data-val="Increase revenue and pricing">💰 Increase revenue and pricing</button>
-        <button class="ob-option" data-val="Set up and launch my business">🚀 Set up and launch my business</button>
+    <!-- RESULTS -->
+    <div class="step" id="resultsStep">
+      <div class="results-header">
+        <div class="results-title">Your content <span>is ready.</span></div>
+        <div class="results-actions">
+          <button class="r-btn" onclick="copyAll()">Copy All</button>
+          <button class="r-btn solid" onclick="startOver()">↺ New Session</button>
+        </div>
       </div>
+      <div class="posts-list" id="postsList"></div>
+      <div id="calOutput"></div>
+      <a class="start-over" onclick="startOver()">← Start a new session</a>
     </div>
-    <div class="ob-step" id="step-2">
-      <div class="ob-question"><span>03 /</span> How long have you been in business?</div>
-      <div class="ob-options">
-        <button class="ob-option" data-val="Just starting out">🌱 Just starting out</button>
-        <button class="ob-option" data-val="Less than 1 year">📅 Less than 1 year</button>
-        <button class="ob-option" data-val="1-3 years">📈 1–3 years</button>
-        <button class="ob-option" data-val="3+ years">🏆 3+ years</button>
-      </div>
-    </div>
-    <div class="ob-row">
-      <button id="ob-back" style="display:none" onclick="obBack()">← Back</button>
-      <button id="ob-next" onclick="obNext()">Continue →</button>
-    </div>
-  </div>
-</div>
 
-<!-- ── PROFILE MODAL ── -->
-<div id="profile-modal">
-  <div id="profile-card">
-    <h3>Update Your Profile</h3>
-    <p>Change your business info to get better advice.</p>
-    <div class="profile-field"><label>Business Type</label><input id="p-biz-type" placeholder="e.g. Auto Repair Shop" /></div>
-    <div class="profile-field"><label>Biggest Goal</label>
-      <select id="p-goal">
-        <option value="Get more customers">🎯 Get more customers</option>
-        <option value="Grow my online presence">📱 Grow my online presence</option>
-        <option value="Increase revenue and pricing">💰 Increase revenue and pricing</option>
-        <option value="Set up and launch my business">🚀 Set up and launch my business</option>
-      </select>
-    </div>
-    <div class="profile-field"><label>Time in Business</label>
-      <select id="p-time">
-        <option value="Just starting out">🌱 Just starting out</option>
-        <option value="Less than 1 year">📅 Less than 1 year</option>
-        <option value="1-3 years">📈 1–3 years</option>
-        <option value="3+ years">🏆 3+ years</option>
-      </select>
-    </div>
-    <button id="profile-save" onclick="saveProfile()">Save & Update</button>
-    <button id="profile-close" onclick="closeProfile()">Cancel</button>
-  </div>
-</div>
-
-<!-- ── HEADER ── -->
-<div id="header" style="display:none">
-  <div id="logo">💎</div>
-  <div><div id="header-name">Ruby Wall Advisor</div><div id="header-sub">AI Business Consultant · Pillar 4</div></div>
-  <div id="header-right">
-    <div id="trial-counter"></div>
-    <button id="profile-btn" onclick="openProfile()">✏️ Profile</button>
-    <button id="logout-btn" onclick="doLogout()">Log Out</button>
-  </div>
-</div>
-
-<!-- ── APP ── -->
-<div id="app" style="display:none">
-  <div id="quick-starts">
-    <button class="qs-btn" onclick="quickStart(this)">📈 How do I get more customers?</button>
-    <button class="qs-btn" onclick="quickStart(this)">🌐 Do I need a website?</button>
-    <button class="qs-btn" onclick="quickStart(this)">💡 What should I post on social media?</button>
-    <button class="qs-btn" onclick="quickStart(this)">💰 How do I price my services?</button>
-    <button class="qs-btn" onclick="quickStart(this)">🚀 Help me set up my business</button>
-  </div>
-  <div id="context-bar">💼 Advising: <span id="ctx-biz"></span> · Goal: <span id="ctx-goal"></span></div>
-  <div id="empty-state">
-    <div class="es-icon">🧠</div>
-    <div class="es-title">Your <span>Business Advisor</span> is ready</div>
-    <div class="es-sub">Ask me anything — marketing, pricing, growth, setup. Built specifically to help local businesses like yours win.</div>
-  </div>
-  <div id="messages" style="display:none;flex-direction:column;gap:16px"></div>
-  <div id="typing"><div class="msg-icon advisor">💎</div><div class="typing-bubble"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div></div>
-  <div id="input-area">
-    <div id="trial-limit-msg">You've used all 10 free trial messages. Contact Ruby Wall to upgrade for full access.</div>
-    <div id="input-row">
-      <textarea id="msg-input" placeholder="Ask your business advisor anything..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-      <button id="send-btn" onclick="sendMessage()">➤</button>
-    </div>
-    <div id="input-hint">Powered by Ruby Wall AI · Your conversations are private</div>
-  </div>
+  </main>
 </div>
 
 <script>
-const PROXY = 'https://rubywallapi.gideonmoffitt08.workers.dev/chat';
-const ADMIN_PASS = 'Einstein_Apollo';
-const TRIAL_LIMIT = 10;
+// ══════════ INVITE CODES ══════════
+const CODES = ['RW-AFN02-UFL','RW-AMZ54-AJJ','RW-APM98-A0T','RW-AYF77-PJ9','RW-AZE41-KLJ','RW-BZQ36-G12','RW-BZY97-F6C','RW-CGY95-YD9','RW-CZD62-0ZE','RW-DMJ46-RO3','RW-EDS22-GVO','RW-ELP94-E0E','RW-FER42-8PB','RW-FFK36-0ZW','RW-FLF06-2X7','RW-FVI21-SXI','RW-FWU77-5RY','RW-GEL69-G8D','RW-GIK95-2Z9','RW-GJW51-ACF','RW-GMI66-690','RW-GUK31-6N1','RW-HGI11-SLB','RW-HKS15-DEV','RW-HQO59-8TS','RW-HRJ28-P87','RW-HSI57-BGB','RW-HXI77-OXZ','RW-HYP22-BD5','RW-HYX44-C74','RW-HZZ70-8LX','RW-IWR59-2LV','RW-IYG45-652','RW-JHU50-EEC','RW-JTP97-JD3','RW-JUC54-FPI','RW-JXD59-877','RW-KCK89-ETA','RW-KMG83-U27','RW-KMS72-HZ1','RW-KMV51-KB1','RW-KPB94-BWL','RW-LBH11-2GF','RW-LCY89-HEX','RW-LHW09-G7C','RW-LKQ75-ZT2','RW-LUZ60-ZQX','RW-LVS68-O11','RW-MGU11-LNM','RW-MVP77-C99','RW-NGY66-EWG','RW-OGH36-0FP','RW-PCW92-T1Y','RW-PCY75-EUG','RW-PJK86-BXZ','RW-PMM66-AM3','RW-QBV90-TK3','RW-QPG68-B80','RW-QQI43-G6L','RW-QZW03-10B','RW-RDB21-CYI','RW-RKA32-5CG','RW-RLK88-ILB','RW-RND16-NM6','RW-RQV14-CPE','RW-SAL11-W9K','RW-SPM63-MUX','RW-SRH44-Z0Q','RW-STS53-8FN','RW-TER98-4VF','RW-TQC97-SGR','RW-TQE74-OTV','RW-TRD14-RWG','RW-TTR01-YCY','RW-TXW32-N7J','RW-TXX39-FVQ','RW-TYI44-LFY','RW-TZK37-VJ5','RW-UCD22-PB5','RW-UCX52-EPS','RW-UEC59-2KF','RW-UFQ09-YS3','RW-UJY70-O3Z','RW-UKM31-UUA','RW-VHV86-BCM','RW-WBZ43-EZA','RW-WFC22-FFR','RW-XAU82-M8L','RW-XSI75-RB4','RW-XXS58-4CU','RW-YDT90-CM1','RW-YJK49-XU6','RW-YOL10-0O6','RW-YSH90-BE3','RW-YWB40-7MH','RW-ZAB36-FO1','RW-ZCI40-RDI','RW-ZJM91-8TA','RW-ZSP52-UJO','RW-ZUM34-RPH'];
 
-let profile = { bizType: '', goal: '', time: '' };
-let messages = [];
-let obStep = 0;
-let obData = { bizType: '', goal: '', time: '' };
-let loading = false;
-let currentTier = null; // 'admin' | 'paid' | 'trial'
-let trialMsgsUsed = 0;
+const ADMIN_PW = 'Einstein_Apollo';
+const SESS = 'rw_v3_sess';
 
-// ── CODE UTILITIES ────────────────────────────────────────────────────
-function generateRandomCode(prefix) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = prefix + '-';
-  for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
-  return code;
+function getClients(){ try{ return JSON.parse(localStorage.getItem('rw_clients')||'{}'); }catch{ return {}; } }
+function saveClients(c){ localStorage.setItem('rw_clients',JSON.stringify(c)); }
+
+function doLogin(){
+  const pw = document.getElementById('loginPw').value.trim();
+  const err = document.getElementById('loginErr');
+  err.classList.remove('show');
+  if(!pw) return;
+  if(pw === ADMIN_PW){ sessionStorage.setItem(SESS,JSON.stringify({role:'admin'})); enterApp(true); return; }
+  const clients = getClients();
+  if(Object.values(clients).some(c=>c.password===pw)){ sessionStorage.setItem(SESS,JSON.stringify({role:'client'})); enterApp(false); return; }
+  err.classList.add('show');
+  document.getElementById('loginPw').value='';
 }
 
-function getCodesDB() {
-  return JSON.parse(localStorage.getItem('rw-codes') || '[]');
+function doSignup(){
+  const code = document.getElementById('invCode').value.trim().toUpperCase();
+  const pw = document.getElementById('signPw').value.trim();
+  const pw2 = document.getElementById('signPw2').value.trim();
+  const err = document.getElementById('signupErr');
+  err.classList.remove('show');
+
+  if(!CODES.includes(code)){ err.textContent='Invalid invite code. Contact Ruby Wall.'; err.classList.add('show'); return; }
+  const clients = getClients();
+  if(Object.values(clients).some(c=>c.code===code)){ err.textContent='This invite code has already been used.'; err.classList.add('show'); return; }
+  if(pw !== pw2){ err.textContent='Passwords do not match.'; err.classList.add('show'); return; }
+  if(pw.length < 6){ err.textContent='Password must be at least 6 characters.'; err.classList.add('show'); return; }
+  clients[code]={code,password:pw,created:new Date().toISOString()};
+  saveClients(clients);
+  sessionStorage.setItem(SESS,JSON.stringify({role:'client'}));
+  enterApp(false);
 }
 
-function saveCodesDB(codes) {
-  localStorage.setItem('rw-codes', JSON.stringify(codes));
+function enterApp(isAdmin){
+  document.getElementById('authLogin').classList.add('gone');
+  document.getElementById('authSignup').classList.add('gone');
+  document.getElementById('theApp').classList.add('on');
+  if(isAdmin) document.getElementById('adminPill').classList.add('on');
 }
 
-function isCodeValid(code) {
-  if (code === ADMIN_PASS) return { valid: true, tier: 'admin' };
-  const codes = getCodesDB();
-  const entry = codes.find(c => c.code === code);
-  if (!entry) return { valid: false };
-  const now = Date.now();
-  if (now > entry.expiry) return { valid: false, expired: true };
-  return { valid: true, tier: entry.tier };
+function doLogout(){
+  sessionStorage.removeItem(SESS);
+  document.getElementById('theApp').classList.remove('on');
+  document.getElementById('adminPill').classList.remove('on');
+  document.getElementById('loginPw').value='';
+  document.getElementById('loginErr').classList.remove('show');
+  toLogin();
 }
 
-// ── LOGIN ─────────────────────────────────────────────────────────────
-function doLogin() {
-  const val = document.getElementById('login-input').value.trim();
-  const result = isCodeValid(val);
-  if (!result.valid) {
-    if (result.expired) {
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('expired-screen').classList.add('show');
-      return;
-    }
-    document.getElementById('login-error').classList.add('show');
-    return;
-  }
-  document.getElementById('login-error').classList.remove('show');
-  document.getElementById('login-screen').classList.add('hidden');
-  currentTier = result.tier;
-  localStorage.setItem('rw-session', JSON.stringify({ tier: result.tier, code: val, ts: Date.now() }));
+function toLogin(){ document.getElementById('authSignup').classList.add('gone'); document.getElementById('authLogin').classList.remove('gone'); }
+function toSignup(){ document.getElementById('authLogin').classList.add('gone'); document.getElementById('authSignup').classList.remove('gone'); }
 
-  if (result.tier === 'admin') {
-    showAdminPanel();
-  } else {
-    startAdvisor();
-  }
-}
-
-function doLogout() {
-  localStorage.removeItem('rw-session');
-  currentTier = null;
-  messages = [];
-  trialMsgsUsed = 0;
-  document.getElementById('login-input').value = '';
-  document.getElementById('login-screen').classList.remove('hidden');
-  document.getElementById('admin-panel').classList.remove('show');
-  document.getElementById('header').style.display = 'none';
-  document.getElementById('app').style.display = 'none';
-}
-
-function checkSession() {
-  const saved = localStorage.getItem('rw-session');
-  if (!saved) return;
-  const sess = JSON.parse(saved);
-  // Re-validate code
-  const result = isCodeValid(sess.code);
-  if (!result.valid) { localStorage.removeItem('rw-session'); return; }
-  currentTier = result.tier;
-  document.getElementById('login-screen').classList.add('hidden');
-  if (result.tier === 'admin') showAdminPanel();
-  else startAdvisor();
-}
-
-// ── ADMIN ─────────────────────────────────────────────────────────────
-function showAdminPanel() {
-  document.getElementById('admin-panel').classList.add('show');
-  renderCodesList();
-}
-
-function generateCode() {
-  const tier = document.getElementById('tier-select').value;
-  const code = generateRandomCode(tier === 'paid' ? 'RWP' : 'RWT');
-  const expiry = Date.now() + (30 * 24 * 60 * 60 * 1000);
-  const codes = getCodesDB();
-  codes.push({ code, tier, expiry, created: Date.now() });
-  saveCodesDB(codes);
-
-  document.getElementById('gen-code-val').textContent = code;
-  document.getElementById('gen-code-meta').textContent =
-    `${tier === 'paid' ? 'Paid Client · Full Access' : 'Free Trial · 10 Messages'} · Expires ${new Date(expiry).toLocaleDateString()}`;
-  document.getElementById('code-result').classList.add('show');
-  renderCodesList();
-}
-
-let lastGenCode = '';
-function copyGenCode() {
-  const code = document.getElementById('gen-code-val').textContent;
-  navigator.clipboard.writeText(code);
-  const btn = document.querySelector('.copy-code-btn');
-  btn.textContent = 'Copied!';
-  setTimeout(() => btn.textContent = 'Copy', 2000);
-}
-
-function renderCodesList() {
-  const codes = getCodesDB();
-  const list = document.getElementById('codes-list');
-  if (codes.length === 0) {
-    list.innerHTML = '<div class="no-codes">No codes generated yet.</div>';
-    return;
-  }
-  const now = Date.now();
-  list.innerHTML = codes.map((c, i) => `
-    <div class="code-item">
-      <div class="code-item-val">${c.code}</div>
-      <div class="code-tier ${c.tier}">${c.tier === 'paid' ? 'PAID' : 'TRIAL'}</div>
-      ${now > c.expiry
-        ? `<div class="code-expired-tag">EXPIRED</div>`
-        : `<div class="code-expiry">Exp. ${new Date(c.expiry).toLocaleDateString()}</div>`
-      }
-      <button class="delete-code-btn" onclick="deleteCode(${i})">✕</button>
-    </div>
-  `).join('');
-}
-
-function deleteCode(i) {
-  const codes = getCodesDB();
-  codes.splice(i, 1);
-  saveCodesDB(codes);
-  renderCodesList();
-}
-
-function enterAdvisor() {
-  document.getElementById('admin-panel').classList.remove('show');
-  startAdvisor();
-}
-
-// ── ADVISOR ───────────────────────────────────────────────────────────
-function startAdvisor() {
-  document.getElementById('header').style.display = 'flex';
-  document.getElementById('app').style.display = 'flex';
-  document.getElementById('app').style.flexDirection = 'column';
-
-  if (currentTier === 'trial') {
-    trialMsgsUsed = parseInt(localStorage.getItem('rw-trial-used') || '0');
-    updateTrialCounter();
-  }
-
-  const savedProfile = localStorage.getItem('rw-advisor-profile');
-  if (savedProfile) {
-    profile = JSON.parse(savedProfile);
-    showContextBar();
-    sendWelcome();
-  } else {
-    document.getElementById('onboarding').classList.remove('hidden');
-  }
-}
-
-function updateTrialCounter() {
-  const counter = document.getElementById('trial-counter');
-  if (currentTier !== 'trial') { counter.style.display = 'none'; return; }
-  const remaining = TRIAL_LIMIT - trialMsgsUsed;
-  counter.style.display = 'block';
-  counter.textContent = `${remaining} messages left`;
-  if (remaining <= 0) {
-    document.getElementById('msg-input').disabled = true;
-    document.getElementById('send-btn').disabled = true;
-    document.getElementById('trial-limit-msg').style.display = 'block';
-  }
-}
-
-// ── ONBOARDING ────────────────────────────────────────────────────────
-function obNext() {
-  if (obStep === 0) {
-    const val = document.getElementById('biz-type-input').value.trim();
-    if (!val) return;
-    obData.bizType = val;
-  } else if (obStep === 1) {
-    const sel = document.querySelector('#step-1 .ob-option.selected');
-    if (!sel) return;
-    obData.goal = sel.dataset.val;
-  } else if (obStep === 2) {
-    const sel = document.querySelector('#step-2 .ob-option.selected');
-    if (!sel) return;
-    obData.time = sel.dataset.val;
-    profile = { bizType: obData.bizType, goal: obData.goal, time: obData.time };
-    localStorage.setItem('rw-advisor-profile', JSON.stringify(profile));
-    document.getElementById('onboarding').classList.add('hidden');
-    showContextBar();
-    sendWelcome();
-    return;
-  }
-  obStep++;
-  document.querySelectorAll('.ob-step').forEach((s, i) => s.classList.toggle('active', i === obStep));
-  document.querySelectorAll('.ob-dot').forEach((d, i) => d.classList.toggle('done', i <= obStep));
-  document.getElementById('ob-back').style.display = obStep > 0 ? 'block' : 'none';
-  document.getElementById('ob-next').textContent = obStep === 2 ? 'Get Started →' : 'Continue →';
-}
-
-function obBack() {
-  obStep--;
-  document.querySelectorAll('.ob-step').forEach((s, i) => s.classList.toggle('active', i === obStep));
-  document.querySelectorAll('.ob-dot').forEach((d, i) => d.classList.toggle('done', i <= obStep));
-  document.getElementById('ob-back').style.display = obStep > 0 ? 'block' : 'none';
-  document.getElementById('ob-next').textContent = obStep === 2 ? 'Get Started →' : 'Continue →';
-}
-
-document.querySelectorAll('.ob-option').forEach(btn => {
-  btn.addEventListener('click', () => {
-    btn.closest('.ob-options').querySelectorAll('.ob-option').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-  });
+window.addEventListener('load',()=>{
+  const s = sessionStorage.getItem(SESS);
+  if(s){ try{ const d=JSON.parse(s); enterApp(d.role==='admin'); }catch{} }
 });
 
-// ── CONTEXT BAR ───────────────────────────────────────────────────────
-function showContextBar() {
-  document.getElementById('ctx-biz').textContent = profile.bizType;
-  document.getElementById('ctx-goal').textContent = profile.goal;
-  document.getElementById('context-bar').classList.add('show');
+// ══════════ APP STATE ══════════
+let state = {
+  industry:'', vibe:'', bizName:'',
+  promo:'', platform:'instagram',
+  count:5, hashtags:true, calendar:false
+};
+
+function pickIndustry(el, val){
+  document.querySelectorAll('#industryGrid .qcard').forEach(c=>c.classList.remove('picked'));
+  el.classList.add('picked');
+  state.industry = val;
+  document.getElementById('nextStep1').disabled = false;
 }
 
-// ── SYSTEM PROMPT ─────────────────────────────────────────────────────
-function buildSystemPrompt() {
-  return `You are the Ruby Wall Business Advisor — an expert AI consultant specializing in helping small and local businesses grow, market themselves, and succeed.
-
-You are advising a business owner with the following profile:
-- Business Type: ${profile.bizType}
-- Current Goal: ${profile.goal}
-- Time in Business: ${profile.time}
-
-Your personality: Direct, practical, encouraging. You give real actionable advice — not generic tips. You speak like a trusted mentor who has helped hundreds of small businesses.
-
-Your expertise includes:
-- Local marketing and getting more customers
-- Social media strategy for small businesses
-- Website and online presence
-- Pricing strategy and revenue growth
-- Business setup (LLC, EIN, branding, licensing)
-- Google Business Profile and local SEO
-- Customer retention and referrals
-- Low-budget marketing tactics that actually work
-
-Rules:
-- Always tailor advice to their specific business type and goal
-- Give specific, actionable steps — not vague suggestions
-- Keep responses focused and scannable (use short paragraphs or bullet points when listing steps)
-- Be encouraging but honest
-- Ask follow-up questions when you need more context
-- Never give legal or financial advice — recommend professionals for those`;
+function pickVibe(el, val){
+  document.querySelectorAll('#vibeGrid .qcard').forEach(c=>c.classList.remove('picked'));
+  el.classList.add('picked');
+  state.vibe = val;
+  checkStep2();
 }
 
-// ── CHAT ──────────────────────────────────────────────────────────────
-function showMessages() {
-  document.getElementById('empty-state').classList.add('hidden');
-  const msgs = document.getElementById('messages');
-  msgs.style.display = 'flex';
+function checkStep2(){
+  const name = document.getElementById('bizName').value.trim();
+  document.getElementById('nextStep2').disabled = !(name && state.vibe);
 }
 
-function addMessage(role, content) {
-  showMessages();
-  const msgs = document.getElementById('messages');
-  const row = document.createElement('div');
-  row.className = `msg-row ${role === 'user' ? 'user' : ''}`;
-  row.innerHTML = `
-    <div class="msg-icon ${role === 'advisor' ? 'advisor' : 'user-icon'}">${role === 'advisor' ? '💎' : '👤'}</div>
-    <div class="msg-bubble ${role === 'advisor' ? 'advisor' : 'user'}">${content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
-  `;
-  msgs.appendChild(row);
-  msgs.scrollTop = msgs.scrollHeight;
+document.addEventListener('input', e=>{
+  if(e.target.id==='bizName') checkStep2();
+});
+
+function setPlatform(el, val){
+  document.querySelectorAll('.ptab').forEach(t=>{ if(t.closest('.platform-row')===el.closest('.platform-row')) t.classList.remove('on'); });
+  el.classList.add('on');
+  state.platform = val;
 }
 
-function setLoading(state) {
-  loading = state;
-  document.getElementById('typing').classList.toggle('show', state);
-  document.getElementById('send-btn').disabled = state;
-  const msgs = document.getElementById('messages');
-  if (msgs) msgs.scrollTop = msgs.scrollHeight;
+function setCount(el, val){
+  document.querySelectorAll('.cnum').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  state.count = val;
 }
 
-async function sendWelcome() {
-  showMessages();
-  setLoading(true);
+function setHash(val){
+  state.hashtags = val;
+  document.getElementById('hashYes').classList.toggle('on', val);
+  document.getElementById('hashNo').classList.toggle('on', !val);
+}
+
+function setCal(val){
+  state.calendar = val;
+  document.getElementById('calYes').classList.toggle('on', val);
+  document.getElementById('calNo').classList.toggle('on', !val);
+}
+
+function goStep(n){
+  if(n===2){
+    state.bizName = document.getElementById('bizName').value.trim();
+  }
+  const steps = ['step1','step2','step3','loadingStep','resultsStep'];
+  steps.forEach(s=>document.getElementById(s).classList.remove('active'));
+  const map = {1:'step1',2:'step2',3:'step3'};
+  document.getElementById(map[n]).classList.add('active');
+  updateDots(n-1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateDots(active){
+  for(let i=0;i<4;i++){
+    const d = document.getElementById('pd'+i);
+    d.classList.remove('active','done');
+    if(i < active) d.classList.add('done');
+    else if(i === active) d.classList.add('active');
+  }
+}
+
+// ══════════ GENERATE ══════════
+const loadPhrases = [
+  'Writing your story...',
+  'Finding your voice...',
+  'Making it sound human...',
+  'Crafting the hook...',
+  'Adding personality...',
+  'Almost there...'
+];
+
+let phraseInterval;
+
+function showLoading(){
+  ['step1','step2','step3','resultsStep'].forEach(s=>document.getElementById(s).classList.remove('active'));
+  document.getElementById('loadingStep').classList.add('active');
+  updateDots(3);
+  let i=0;
+  phraseInterval = setInterval(()=>{
+    document.getElementById('loadPhrase').textContent = loadPhrases[i % loadPhrases.length];
+    i++;
+  }, 1800);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function hideLoading(){
+  clearInterval(phraseInterval);
+  document.getElementById('loadingStep').classList.remove('active');
+}
+
+async function generate(){
+  state.bizName = document.getElementById('bizName').value.trim();
+  state.promo = document.getElementById('bizPromo').value.trim();
+  if(!state.bizName){ alert('Please enter your business name.'); return; }
+
+  showLoading();
+
+  const platformText = state.platform === 'all'
+    ? 'Instagram, Facebook, and TikTok — write one version optimized for each platform'
+    : state.platform.charAt(0).toUpperCase() + state.platform.slice(1);
+
+  const hashNote = state.hashtags
+    ? 'Add 5-7 hashtags at the end, on a new line. Mix popular and niche tags.'
+    : 'Do not include any hashtags.';
+
+  const calNote = state.calendar
+    ? 'After the posts, add a section called CALENDAR showing a 7-day posting schedule (Mon-Sun).'
+    : '';
+
+  const prompt = `You're a social media expert who writes content for local businesses. You write like a real human — not corporate, not stiff. You understand what actually stops people from scrolling.
+
+Business: ${state.bizName}
+Type of business: ${state.industry}
+${state.promo ? `Current promotion/focus: ${state.promo}` : 'Focus: General brand awareness and community connection'}
+Tone: Write in a ${state.vibe} tone
+Platform: ${platformText}
+
+Write exactly ${state.count} social media posts. Make each one completely different — different hook, different angle, different structure. 
+
+Guidelines:
+- Open with something that makes you stop scrolling. No "Are you looking for..." or "Introducing..." or any cliché opener.
+- Sound like a real person who loves their business, not a marketing department
+- Short punchy sentences. White space. Easy to read on a phone.
+- Use emojis naturally — how a real person would, not plastered everywhere
+- Speak directly to someone who lives nearby
+- ${hashNote}
+- Each post should make someone want to either visit, share, or save it
+
+${calNote}
+
+Format:
+POST [number]:
+[post content]
+---`;
+
   try {
-    const res = await fetch(PROXY, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5', max_tokens: 1000,
-        system: buildSystemPrompt(),
-        messages: [{ role: 'user', content: `Introduce yourself briefly and give me one specific quick win for my ${profile.bizType} business focused on my goal to ${profile.goal}. Keep it short and punchy.` }]
-      })
+    const res = await fetch('https://rubywallapi.gideonmoffitt08.workers.dev',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
     });
-    const data = JSON.parse(await res.text());
-    const reply = data.content?.[0]?.text || "Hey! I'm your Ruby Wall Business Advisor. Ask me anything about growing your business.";
-    addMessage('advisor', reply);
-    messages.push({ role: 'assistant', content: reply });
-  } catch {
-    addMessage('advisor', "Hey! I'm your Ruby Wall Business Advisor. What's on your mind?");
+    const data = await res.json();
+    const text = data.content.map(i=>i.text||'').join('');
+    hideLoading();
+    renderResults(text);
+  } catch(err){
+    hideLoading();
+    alert('Something went wrong. Please try again.');
+    goStep(3);
   }
-  setLoading(false);
 }
 
-async function sendMessage() {
-  if (currentTier === 'trial' && trialMsgsUsed >= TRIAL_LIMIT) return;
-  const input = document.getElementById('msg-input');
-  const txt = input.value.trim();
-  if (!txt || loading) return;
+// ══════════ RENDER ══════════
+function renderResults(text){
+  document.getElementById('resultsStep').classList.add('active');
+  updateDots(4);
 
-  showMessages();
-  addMessage('user', txt);
-  messages.push({ role: 'user', content: txt });
-  input.value = '';
-  input.style.height = 'auto';
-  setLoading(true);
+  const parts = text.split(/POST\s*\d+[:\.]?/i).filter(p=>p.trim() && !p.includes('CALENDAR'));
+  const list = document.getElementById('postsList');
+  list.innerHTML = '';
 
-  if (currentTier === 'trial') {
-    trialMsgsUsed++;
-    localStorage.setItem('rw-trial-used', trialMsgsUsed);
-    updateTrialCounter();
+  const platClasses = {instagram:'ig', facebook:'fb', tiktok:'tt'};
+  const platLabels = {instagram:'📸 Instagram', facebook:'👥 Facebook', tiktok:'🎵 TikTok'};
+
+  parts.forEach((part, i)=>{
+    const lines = part.trim().split('\n');
+    let hashtags='', bodyLines=[];
+    lines.forEach(l=>{
+      if(l.trim().startsWith('#')) hashtags += l.trim()+' ';
+      else if(l.trim()==='---') return;
+      else if(l.trim()) bodyLines.push(l.trim());
+    });
+    const body = bodyLines.join('\n');
+    if(!body) return;
+
+    let platKey = state.platform==='all' ? ['instagram','facebook','tiktok'][i%3] : state.platform;
+    const platClass = platClasses[platKey] || 'ig';
+    const platLabel = platLabels[platKey] || '📸 Instagram';
+    const initials = state.bizName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const handle = '@' + state.bizName.toLowerCase().replace(/\s+/g,'_');
+
+    const wrap = document.createElement('div');
+    wrap.className = 'post-wrap';
+    wrap.style.animationDelay = (i*0.1)+'s';
+
+    if(platKey === 'tiktok'){
+      wrap.innerHTML = `
+        <div class="post-platform-bar">
+          <span class="post-plat-label tt">${platLabel}</span>
+          <div class="post-actions-top">
+            <button class="regen-single" onclick="regenOne(this,${i})">↺ Not feeling it?</button>
+            <button class="copy-post-btn" id="cpbtn${i}" onclick="copyOne(this,${i})">Copy</button>
+          </div>
+        </div>
+        <div class="tt-frame">
+          <div class="tt-video-area">
+            <div class="tt-overlay">
+              <div class="tt-handle">${handle}</div>
+              <div class="tt-caption-preview" id="postBody${i}">${esc(body)}</div>
+            </div>
+            <div class="tt-side">
+              <div class="tt-btn"><div class="tt-btn-icon">❤️</div><div class="tt-btn-count">2.4k</div></div>
+              <div class="tt-btn"><div class="tt-btn-icon">💬</div><div class="tt-btn-count">84</div></div>
+              <div class="tt-btn"><div class="tt-btn-icon">↗️</div><div class="tt-btn-count">Share</div></div>
+            </div>
+          </div>
+          <div class="tt-bottom">
+            <div class="post-caption" style="font-size:13px;line-height:1.6;">${esc(body)}</div>
+            ${hashtags ? `<div class="post-hashtags" style="margin-top:6px;">${esc(hashtags)}</div>` : ''}
+          </div>
+        </div>`;
+    } else {
+      wrap.innerHTML = `
+        <div class="post-platform-bar">
+          <span class="post-plat-label ${platClass}">${platLabel}</span>
+          <div class="post-actions-top">
+            <button class="regen-single" onclick="regenOne(this,${i})">↺ Not feeling it?</button>
+            <button class="copy-post-btn" id="cpbtn${i}" onclick="copyOne(this,${i})">Copy</button>
+          </div>
+        </div>
+        <div class="phone-frame">
+          <div class="ig-header">
+            <div class="ig-avatar">${initials}</div>
+            <div>
+              <div class="ig-handle">${handle}</div>
+              <div class="ig-time">Just now · ${platKey==='facebook'?'🌐':'📍 Houston, TX'}</div>
+            </div>
+          </div>
+          <div class="post-image-placeholder">
+            <div class="post-image-inner">
+              <div class="post-image-icon">🖼️</div>
+              <div class="post-image-text">YOUR PHOTO HERE</div>
+            </div>
+          </div>
+          <div class="ig-actions">
+            <span class="ig-action">❤️</span>
+            <span class="ig-action">💬</span>
+            <span class="ig-action">↗️</span>
+          </div>
+          <div class="post-body">
+            <div class="post-username">${handle}</div>
+            <div class="post-caption" id="postBody${i}">${esc(body)}</div>
+            ${hashtags ? `<div class="post-hashtags">${esc(hashtags)}</div>` : ''}
+          </div>
+        </div>`;
+    }
+    list.appendChild(wrap);
+  });
+
+  // Calendar
+  if(state.calendar){
+    const calOut = document.getElementById('calOutput');
+    const days=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+    const tags=['Brand Story','Promo','BTS','Tips','CTA','Weekend','Community'];
+    const colors=['','b','c','','b','c',''];
+    calOut.innerHTML = `
+      <div class="cal-section">
+        <div class="cal-title">📅 Your Content Calendar</div>
+        <div class="cal-grid">
+          ${days.map(d=>`<div class="cal-col-head">${d}</div>`).join('')}
+          ${days.map((d,i)=>`
+            <div class="cal-cell">
+              <div class="cal-num">${i+1}</div>
+              <div class="cal-tag ${colors[i]}">${tags[i]}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
   }
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function regenOne(btn, idx){
+  const bodyEl = document.getElementById('postBody'+idx);
+  if(!bodyEl) return;
+  btn.textContent='Rewriting...';
+  btn.disabled=true;
+
+  const prompt = `You're a social media copywriter. Write ONE fresh social media post for ${state.bizName}, a ${state.industry} business. Tone: ${state.vibe}. Platform: ${state.platform}. ${state.promo ? 'Focus: '+state.promo : ''} Make it completely different from anything typical. Sound human, not corporate. No cliché openers. Short punchy sentences. ${state.hashtags ? 'Add 5 hashtags at the end.' : 'No hashtags.'} Return just the post text, nothing else.`;
 
   try {
-    const res = await fetch(PROXY, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1000, system: buildSystemPrompt(), messages })
+    const res = await fetch('https://rubywallapi.gideonmoffitt08.workers.dev',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
     });
-    const data = JSON.parse(await res.text());
-    const reply = data.content?.[0]?.text || 'I had trouble responding. Please try again.';
-    addMessage('advisor', reply);
-    messages.push({ role: 'assistant', content: reply });
-  } catch {
-    addMessage('advisor', 'Connection error. Please try again.');
-  }
-  setLoading(false);
+    const data = await res.json();
+    const text = data.content.map(i=>i.text||'').join('').trim();
+    bodyEl.textContent = text;
+  } catch(e){ alert('Regen failed, try again.'); }
+
+  btn.textContent='↺ Not feeling it?';
+  btn.disabled=false;
 }
 
-function quickStart(btn) {
-  document.getElementById('msg-input').value = btn.textContent.slice(2).trim();
-  sendMessage();
+function copyOne(btn, idx){
+  const el = document.getElementById('postBody'+idx);
+  if(!el) return;
+  navigator.clipboard.writeText(el.innerText).then(()=>{
+    btn.textContent='✓ Copied!';
+    btn.classList.add('done');
+    setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('done'); },2000);
+  });
 }
 
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+function copyAll(){
+  const posts = [...document.querySelectorAll('[id^="postBody"]')].map(el=>el.innerText).join('\n\n---\n\n');
+  navigator.clipboard.writeText(posts).then(()=>alert('All posts copied!'));
 }
 
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+function startOver(){
+  state = {industry:'',vibe:'',bizName:'',promo:'',platform:'instagram',count:5,hashtags:true,calendar:false};
+  document.querySelectorAll('.qcard').forEach(c=>c.classList.remove('picked'));
+  document.getElementById('bizName').value='';
+  document.getElementById('bizPromo').value='';
+  document.getElementById('nextStep1').disabled=true;
+  document.getElementById('nextStep2').disabled=true;
+  document.getElementById('postsList').innerHTML='';
+  document.getElementById('calOutput').innerHTML='';
+  ['step2','step3','loadingStep','resultsStep'].forEach(s=>document.getElementById(s).classList.remove('active'));
+  document.getElementById('step1').classList.add('active');
+  updateDots(0);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ── PROFILE ───────────────────────────────────────────────────────────
-function openProfile() {
-  document.getElementById('p-biz-type').value = profile.bizType;
-  document.getElementById('p-goal').value = profile.goal;
-  document.getElementById('p-time').value = profile.time;
-  document.getElementById('profile-modal').classList.add('show');
-}
-
-function closeProfile() { document.getElementById('profile-modal').classList.remove('show'); }
-
-function saveProfile() {
-  profile.bizType = document.getElementById('p-biz-type').value.trim() || profile.bizType;
-  profile.goal = document.getElementById('p-goal').value;
-  profile.time = document.getElementById('p-time').value;
-  localStorage.setItem('rw-advisor-profile', JSON.stringify(profile));
-  showContextBar();
-  closeProfile();
-  messages = [];
-  document.getElementById('messages').innerHTML = '';
-  document.getElementById('empty-state').classList.remove('hidden');
-  document.getElementById('messages').style.display = 'none';
-  sendWelcome();
-}
-
-// ── BOOT ──────────────────────────────────────────────────────────────
-checkSession();
+function esc(str){ return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
 </body>
 </html>

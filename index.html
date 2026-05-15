@@ -752,6 +752,63 @@ main {
 .s-btn.close-s { background:var(--border2); color:var(--text); }
 .s-btn.close-s:hover { background:rgba(255,255,255,.1); }
 
+
+/* ══════════════════════════════
+   POST COACHING CARD
+══════════════════════════════ */
+.coaching-card {
+  margin-top: 12px;
+  background: linear-gradient(135deg, rgba(217,0,55,0.06), rgba(201,168,76,0.04));
+  border: 1px solid rgba(217,0,55,0.15);
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: none;
+}
+.coaching-card.visible { display: block; }
+
+.coaching-loading {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 1px;
+}
+.coaching-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--border2);
+  border-top-color: var(--ruby2);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.coaching-content { display: none; }
+.coaching-content.visible { display: block; }
+
+.coaching-row {
+  display: flex; gap: 12px;
+  flex-wrap: wrap;
+}
+.coaching-chip {
+  flex: 1; min-width: 140px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.coaching-chip-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  color: var(--ruby2); text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.coaching-chip-label.gold { color: var(--gold); }
+.coaching-chip-label.green { color: #4ade80; }
+.coaching-chip-value {
+  font-size: 13px; color: var(--text);
+  line-height: 1.4; font-weight: 500;
+}
+
 /* Animations */
 @keyframes riseUp {
   from { opacity:0; transform:translateY(20px); }
@@ -1636,6 +1693,40 @@ function renderResults(text){
         </div>`;
     }
     list.appendChild(wrap);
+
+    // Add coaching card for this post
+    const coachCard = document.createElement('div');
+    coachCard.className = 'coaching-card';
+    coachCard.id = 'coaching'+i;
+    coachCard.innerHTML = `
+      <div class="coaching-loading" id="coachLoad${i}">
+        <div class="coaching-spinner"></div>
+        ANALYZING YOUR POST...
+      </div>
+      <div class="coaching-content" id="coachContent${i}">
+        <div class="coaching-row">
+          <div class="coaching-chip">
+            <div class="coaching-chip-label">✦ Best For</div>
+            <div class="coaching-chip-value" id="coachBestFor${i}">—</div>
+          </div>
+          <div class="coaching-chip">
+            <div class="coaching-chip-label gold">⚡ Boost Tip</div>
+            <div class="coaching-chip-value" id="coachBoost${i}">—</div>
+          </div>
+          <div class="coaching-chip">
+            <div class="coaching-chip-label green">🕐 Best Time</div>
+            <div class="coaching-chip-value" id="coachTime${i}">—</div>
+          </div>
+          <div class="coaching-chip">
+            <div class="coaching-chip-label">💪 Strength</div>
+            <div class="coaching-chip-value" id="coachStrength${i}">—</div>
+          </div>
+        </div>
+      </div>`;
+    list.appendChild(coachCard);
+
+    // Analyze after short delay so posts render first
+    setTimeout(()=>analyzePost(i, body, platKey), i * 800 + 400);
   });
 
   // Calendar
@@ -1744,6 +1835,54 @@ function startOver(){
   document.getElementById('step1').classList.add('active');
   updateDots(0);
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+
+// ══════════ POST COACHING ══════════
+async function analyzePost(postIdx, postText, platform){
+  const card = document.getElementById('coaching'+postIdx);
+  const loadEl = document.getElementById('coachLoad'+postIdx);
+  const contentEl = document.getElementById('coachContent'+postIdx);
+  if(!card) return;
+
+  card.classList.add('visible');
+  loadEl.style.display = 'flex';
+  contentEl.classList.remove('visible');
+
+  const prompt = `You are a social media strategist. Analyze this ${platform} post for a local business and return ONLY a JSON object with exactly these fields, no markdown, no explanation:
+{
+  "bestFor": "one short sentence — what context or format this post works best for",
+  "boostTip": "one specific actionable tweak to make this post perform better",
+  "bestTime": "best day and time to post this for maximum reach",
+  "strength": "the single strongest element of this post in 5 words or less"
+}
+
+Post to analyze:
+${postText}`;
+
+  try {
+    const res = await fetch('https://rubywallapi.gideonmoffitt08.workers.dev', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({messages:[{role:'user', content:prompt}]})
+    });
+    const data = await res.json();
+    const raw = data.content.map(i=>i.text||'').join('').trim();
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+
+    document.getElementById('coachBestFor'+postIdx).textContent = parsed.bestFor || '—';
+    document.getElementById('coachBoost'+postIdx).textContent = parsed.boostTip || '—';
+    document.getElementById('coachTime'+postIdx).textContent = parsed.bestTime || '—';
+    document.getElementById('coachStrength'+postIdx).textContent = parsed.strength || '—';
+
+    loadEl.style.display = 'none';
+    contentEl.classList.add('visible');
+  } catch(e){
+    loadEl.style.display = 'none';
+    contentEl.innerHTML = '<div style="font-size:12px;color:var(--muted);">Could not load insights. Try regenerating.</div>';
+    contentEl.classList.add('visible');
+  }
 }
 
 function esc(str){ return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }

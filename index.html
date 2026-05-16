@@ -1181,9 +1181,24 @@ main {
     <div class="nav-right">
       <div class="admin-pill" id="adminPill">⚡ ADMIN</div>
       <div class="nav-ai">AI POWERED</div>
+      <div class="voice-badge" id="voiceBadge" onclick="openSettings()">🎙 My Voice</div>
       <button class="nav-out" onclick="doLogout()">Sign Out</button>
     </div>
   </nav>
+  <div class="tool-tabs" id="toolTabs">
+    <button class="tool-tab active" onclick="switchTab(this,'studio')" id="tabStudio">
+      <span class="tool-tab-icon">✦</span>
+      <span class="tool-tab-label">Content Studio</span>
+    </button>
+    <button class="tool-tab" onclick="switchTab(this,'hooks')" id="tabHooks">
+      <span class="tool-tab-icon">🔥</span>
+      <span class="tool-tab-label">Viral Hooks</span>
+    </button>
+    <button class="tool-tab" onclick="switchTab(this,'voice')" id="tabVoice">
+      <span class="tool-tab-icon">🎙</span>
+      <span class="tool-tab-label">Brand Voice</span>
+    </button>
+  </div>
 
   <main>
 

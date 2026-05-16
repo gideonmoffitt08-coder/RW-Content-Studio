@@ -753,6 +753,271 @@ main {
 .s-btn.close-s:hover { background:rgba(255,255,255,.1); }
 
 
+
+/* ══════════════════════════════
+   TOOL TABS
+══════════════════════════════ */
+.tool-tabs {
+  position: sticky; top: 62px; z-index: 99;
+  background: rgba(8,4,8,0.96);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center;
+  padding: 0 32px; gap: 0;
+}
+.tool-tab {
+  display: flex; align-items: center; gap: 8px;
+  padding: 16px 24px;
+  background: transparent; border: none;
+  color: var(--muted); font-size: 13px;
+  font-weight: 500; cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  position: relative; transition: color 0.2s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.tool-tab:hover { color: var(--text); }
+.tool-tab.active {
+  color: var(--text);
+  border-bottom-color: var(--ruby2);
+}
+.tool-tab-icon { font-size: 14px; }
+.tool-tab-label { letter-spacing: 0.3px; }
+
+/* Tool panels */
+.tool-panel { display: none; }
+.tool-panel.active { display: block; }
+
+/* ══════════════════════════════
+   VISUAL HIERARCHY UPGRADES
+══════════════════════════════ */
+.step-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 5px;
+  color: var(--muted); text-transform: uppercase;
+  margin-bottom: 16px; text-align: center;
+  opacity: 0.7;
+}
+.step-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(44px, 7vw, 72px);
+  font-weight: 900; line-height: 0.95;
+  text-align: center; margin-bottom: 14px;
+  letter-spacing: -1px;
+}
+.step-sub {
+  font-size: 15px; color: var(--muted);
+  text-align: center; max-width: 420px;
+  margin: 0 auto 52px; line-height: 1.7;
+  font-weight: 300;
+}
+.big-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  color: var(--muted); text-transform: uppercase;
+  margin-bottom: 12px; display: block;
+  opacity: 0.8;
+}
+.qcard-label { font-size: 14px; font-weight: 600; }
+.qcard-sub { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+/* Step transitions */
+.step {
+  animation: stepIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Post card slide in */
+.post-wrap {
+  animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Micro animations on qcards */
+.qcard {
+  transition: all 0.18s cubic-bezier(0.34,1.56,0.64,1);
+}
+.qcard:hover { transform: translateY(-3px) scale(1.02); }
+.qcard:active { transform: scale(0.97); }
+.qcard.picked { transform: scale(1.02); }
+
+/* Button pulse on click */
+.next-btn:active { transform: scale(0.98); }
+.ptab { transition: all 0.15s cubic-bezier(0.34,1.56,0.64,1); }
+.ptab:active { transform: scale(0.95); }
+.ptab.on { transform: scale(1.03); }
+.cnum { transition: all 0.15s cubic-bezier(0.34,1.56,0.64,1); }
+.cnum:active { transform: scale(0.92); }
+.cnum.on { transform: scale(1.08); }
+
+/* ══════════════════════════════
+   VIRAL HOOKS TOOL
+══════════════════════════════ */
+.hooks-wrap {
+  max-width: 700px; margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+.hooks-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(40px, 6vw, 64px);
+  font-weight: 900; line-height: 0.95;
+  margin-bottom: 12px; letter-spacing: -1px;
+}
+.hooks-title em { color: var(--ruby2); font-style: italic; }
+.hooks-sub {
+  font-size: 14px; color: var(--muted);
+  max-width: 480px; line-height: 1.7;
+  font-weight: 300; margin-bottom: 36px;
+}
+.hooks-input-row {
+  display: flex; gap: 12px; margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.hooks-input {
+  flex: 1; min-width: 200px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 14px; color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px; padding: 16px 20px;
+  outline: none; transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+.hooks-input:focus { border-color: var(--ruby); }
+.hooks-btn {
+  padding: 16px 28px;
+  background: linear-gradient(135deg, var(--ruby), #8B0020);
+  border: none; border-radius: 14px; color: #fff;
+  font-family: 'Fraunces', serif;
+  font-size: 16px; font-weight: 700; font-style: italic;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.hooks-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(217,0,55,0.4); }
+.hooks-btn:disabled { opacity: 0.4; transform: none; cursor: not-allowed; }
+
+.hooks-type-row {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
+}
+.hook-type-chip {
+  padding: 7px 16px; border-radius: 100px;
+  border: 1px solid var(--border2);
+  background: var(--card); color: var(--muted);
+  font-size: 12px; cursor: pointer;
+  transition: all 0.15s; font-family: 'Outfit', sans-serif;
+}
+.hook-type-chip:hover { border-color: var(--ruby2); color: var(--ruby2); }
+.hook-type-chip.on { background: var(--ruby); border-color: var(--ruby); color: #fff; font-weight: 600; }
+
+.hooks-list { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+.hook-card {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 16px; padding: 20px 22px;
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 16px;
+  animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+  transition: border-color 0.2s;
+}
+.hook-card:hover { border-color: rgba(217,0,55,0.3); }
+.hook-num {
+  font-family: 'Fraunces', serif;
+  font-size: 28px; font-weight: 900;
+  color: var(--ruby); opacity: 0.25;
+  line-height: 1; flex-shrink: 0; width: 32px;
+}
+.hook-text {
+  font-size: 16px; color: var(--text);
+  line-height: 1.6; flex: 1; font-weight: 500;
+}
+.hook-copy {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--muted); font-size: 11px;
+  padding: 6px 12px; border-radius: 8px;
+  cursor: pointer; transition: all 0.2s;
+  font-family: 'Outfit', sans-serif;
+  flex-shrink: 0;
+}
+.hook-copy:hover { border-color: var(--ruby2); color: var(--ruby2); }
+.hook-copy.done { border-color: #4ade80; color: #4ade80; }
+
+/* ══════════════════════════════
+   BRAND VOICE TAB
+══════════════════════════════ */
+.voice-tab-wrap {
+  max-width: 600px; margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+.voice-tab-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 900; margin-bottom: 10px;
+  letter-spacing: -1px;
+}
+.voice-tab-title em { color: var(--ruby2); font-style: italic; }
+.voice-tab-sub {
+  font-size: 14px; color: var(--muted);
+  line-height: 1.7; font-weight: 300; margin-bottom: 36px;
+}
+.voice-profile-card {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 20px; padding: 28px;
+  margin-bottom: 20px;
+}
+.voice-profile-row {
+  display: flex; gap: 12px; padding: 14px 0;
+  border-bottom: 1px solid var(--border2);
+  align-items: flex-start;
+}
+.voice-profile-row:last-child { border-bottom: none; }
+.voice-profile-key {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 2px;
+  color: var(--muted); text-transform: uppercase;
+  width: 110px; flex-shrink: 0; padding-top: 2px;
+}
+.voice-profile-val {
+  font-size: 13px; color: var(--text);
+  line-height: 1.5; flex: 1;
+}
+.voice-empty {
+  text-align: center; padding: 60px 20px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 20px; margin-bottom: 20px;
+}
+.voice-empty-icon { font-size: 40px; margin-bottom: 16px; }
+.voice-empty-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.voice-empty-sub { font-size: 13px; color: var(--muted); }
+.voice-tab-btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, var(--ruby), #8B0020);
+  border: none; border-radius: 14px; color: #fff;
+  font-family: 'Fraunces', serif;
+  font-size: 18px; font-weight: 700; font-style: italic;
+  cursor: pointer; transition: all 0.2s;
+}
+.voice-tab-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(217,0,55,0.4); }
+.voice-tab-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--muted); margin-top: 10px;
+  font-size: 14px; font-style: normal;
+  font-family: 'Outfit', sans-serif;
+}
+.voice-tab-btn.secondary:hover { border-color: var(--ruby2); color: var(--ruby2); box-shadow: none; transform: none; }
+
 /* ══════════════════════════════
    POST COACHING CARD
 ══════════════════════════════ */
@@ -916,12 +1181,14 @@ main {
     <div class="nav-right">
       <div class="admin-pill" id="adminPill">⚡ ADMIN</div>
       <div class="nav-ai">AI POWERED</div>
-      <div class="voice-badge" id="voiceBadge" onclick="openSettings()">🎙 My Voice</div>
       <button class="nav-out" onclick="doLogout()">Sign Out</button>
     </div>
   </nav>
 
   <main>
+
+  <!-- ══════ TOOL PANEL: STUDIO ══════ -->
+  <div class="tool-panel active" id="panelStudio">
 
     <!-- Progress -->
     <div class="progress" id="progressDots">
@@ -1074,6 +1341,47 @@ main {
       <a class="start-over" onclick="startOver()">← Start a new session</a>
     </div>
 
+  </div><!-- end panelStudio -->
+
+  <!-- ══════ TOOL PANEL: VIRAL HOOKS ══════ -->
+  <div class="tool-panel" id="panelHooks">
+    <div class="hooks-wrap">
+      <div class="hooks-title">Viral <em>Hooks</em></div>
+      <p class="hooks-sub">Generate scroll-stopping opening lines for your posts. Pick your style, describe your business, and get hooks that make people stop.</p>
+
+      <div class="hooks-type-row" id="hookTypeRow">
+        <div class="hook-type-chip on" onclick="setHookType(this,'curiosity')">🤔 Curiosity</div>
+        <div class="hook-type-chip" onclick="setHookType(this,'bold claim')">🔥 Bold Claim</div>
+        <div class="hook-type-chip" onclick="setHookType(this,'story opener')">📖 Story</div>
+        <div class="hook-type-chip" onclick="setHookType(this,'question')">❓ Question</div>
+        <div class="hook-type-chip" onclick="setHookType(this,'controversial')">⚡ Controversial</div>
+        <div class="hook-type-chip" onclick="setHookType(this,'local pride')">📍 Local Pride</div>
+      </div>
+
+      <div class="hooks-input-row">
+        <input class="hooks-input" type="text" id="hookBiz" placeholder="Your business name" />
+        <input class="hooks-input" type="text" id="hookNiche" placeholder="Your industry" />
+      </div>
+      <div class="hooks-input-row">
+        <input class="hooks-input" type="text" id="hookTopic" placeholder="What is the post about? (optional)" />
+        <button class="hooks-btn" onclick="generateHooks()" id="hooksBtn">Generate Hooks →</button>
+      </div>
+
+      <div class="hooks-list" id="hooksList"></div>
+    </div>
+  </div>
+
+  <!-- ══════ TOOL PANEL: BRAND VOICE ══════ -->
+  <div class="tool-panel" id="panelVoice">
+    <div class="voice-tab-wrap">
+      <div class="voice-tab-title">Your Brand <em>Voice</em></div>
+      <p class="voice-tab-sub">This is the DNA behind every piece of content Ruby Wall creates for you. The more accurate your profile, the better your content.</p>
+      <div id="voiceTabContent"></div>
+      <button class="voice-tab-btn" id="voiceTrainBtn" onclick="retrain()">✦ Train My Brand Voice</button>
+      <button class="voice-tab-btn secondary" id="voiceResetBtn" onclick="resetVoice()" style="display:none;">Reset Voice Profile</button>
+    </div>
+  </div>
+
   </main>
 </div>
 
@@ -1136,6 +1444,143 @@ window.addEventListener('load',()=>{
   if(s){ try{ const d=JSON.parse(s); enterApp(d.role==='admin'); }catch{} }
 });
 
+
+
+// ══════════ TAB SWITCHING ══════════
+function switchTab(el, panel){
+  document.querySelectorAll('.tool-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel'+panel.charAt(0).toUpperCase()+panel.slice(1)).classList.add('active');
+  if(panel==='voice') renderVoiceTab();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══════════ VIRAL HOOKS ══════════
+let hookType = 'curiosity';
+
+function setHookType(el, type){
+  document.querySelectorAll('.hook-type-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  hookType = type;
+}
+
+async function generateHooks(){
+  const biz = document.getElementById('hookBiz').value.trim();
+  const niche = document.getElementById('hookNiche').value.trim();
+  const topic = document.getElementById('hookTopic').value.trim();
+  if(!biz || !niche){ alert('Please fill in your business name and industry.'); return; }
+
+  const btn = document.getElementById('hooksBtn');
+  btn.disabled = true; btn.textContent = 'Generating...';
+
+  const list = document.getElementById('hooksList');
+  list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-family:Space Mono,monospace;font-size:11px;letter-spacing:2px;">CRAFTING YOUR HOOKS...</div>';
+
+  const prompt = `You are a viral social media copywriter. Generate exactly 8 ${hookType}-style opening hooks for a social media post.
+
+Business: ${biz}
+Industry: ${niche}
+${topic ? 'Post topic: '+topic : ''}
+
+Rules:
+- Each hook is ONE sentence only — the very first line of a post
+- Must immediately stop someone from scrolling
+- Style: ${hookType} — lean hard into this style
+- Never use another brand name as reference
+- No generic openers like "Are you looking for" or "Introducing"
+- Sound like a real human wrote it
+- Each hook must be completely different
+
+Return ONLY a JSON array of 8 strings. No markdown, no explanation. Example format:
+["hook one","hook two","hook three"]`;
+
+  try {
+    const res = await fetch('https://rubywallapi.gideonmoffitt08.workers.dev',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const raw = data.content.map(i=>i.text||'').join('').trim();
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const hooks = JSON.parse(clean);
+
+    list.innerHTML = '';
+    hooks.forEach((h,i)=>{
+      const card = document.createElement('div');
+      card.className = 'hook-card';
+      card.style.animationDelay = (i*0.07)+'s';
+      card.innerHTML = `
+        <div class="hook-num">${i+1}</div>
+        <div class="hook-text">${esc(h)}</div>
+        <button class="hook-copy" onclick="copyHook(this,'${esc(h).replace(/'/g,"&#39;")}')">Copy</button>`;
+      list.appendChild(card);
+    });
+  } catch(e){
+    list.innerHTML = '<div style="color:var(--ruby3);padding:20px;font-size:13px;">Could not generate hooks. Please try again.</div>';
+  }
+
+  btn.disabled = false; btn.textContent = 'Generate Hooks →';
+}
+
+function copyHook(btn, text){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent = '✓'; btn.classList.add('done');
+    setTimeout(()=>{ btn.textContent = 'Copy'; btn.classList.remove('done'); },2000);
+  });
+}
+
+// ══════════ VOICE TAB ══════════
+function renderVoiceTab(){
+  const v = getBrandVoice();
+  const container = document.getElementById('voiceTabContent');
+  const trainBtn = document.getElementById('voiceTrainBtn');
+  const resetBtn = document.getElementById('voiceResetBtn');
+
+  if(!v){
+    container.innerHTML = `
+      <div class="voice-empty">
+        <div class="voice-empty-icon">🎙</div>
+        <div class="voice-empty-title">No voice profile yet</div>
+        <div class="voice-empty-sub">Complete the Brand Voice Trainer to personalize every post Ruby Wall creates for you.</div>
+      </div>`;
+    trainBtn.textContent = '✦ Set Up My Brand Voice';
+    resetBtn.style.display = 'none';
+    return;
+  }
+
+  const rows = [
+    {key:'Personality', val:v.personality},
+    {key:'Avoid', val:v.avoid},
+    {key:'Audience', val:v.audience},
+    {key:'Known for', val:v.reputation},
+    {key:'Humor', val:v.humor},
+    {key:'Local feel', val:v.local},
+    {key:'Brand words', val:v.threewords},
+    {key:'Biggest flex', val:v.flex},
+    {key:'Dream customer', val:v.dreamcustomer},
+    {key:'Posts make people feel', val:v.feeling},
+  ];
+
+  container.innerHTML = `
+    <div class="voice-profile-card">
+      ${rows.map(r=>`
+        <div class="voice-profile-row">
+          <div class="voice-profile-key">${r.key}</div>
+          <div class="voice-profile-val">${r.val||'<span style="color:var(--muted);font-style:italic;">Not set</span>'}</div>
+        </div>`).join('')}
+    </div>`;
+
+  trainBtn.textContent = '↺ Retrain My Voice';
+  resetBtn.style.display = 'block';
+}
+
+function resetVoice(){
+  if(confirm('Are you sure you want to reset your brand voice profile?')){
+    localStorage.removeItem(BVT_KEY);
+    renderVoiceTab();
+  }
+}
 
 // ══════════ BRAND VOICE TRAINER ══════════
 const BVT_KEY = 'rw_brand_voice';
